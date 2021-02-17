@@ -16,7 +16,7 @@ def get_token():
   r.raise_for_status()
   return r.json()['access_token']
 
-url = "https://discord.com/api/v8/applications/811374808930975785/guilds/763590935455727627/commands"
+url = "https://discord.com/api/v8/applications/811374808930975785/commands"
 
 json = {
     "name": "blep",
