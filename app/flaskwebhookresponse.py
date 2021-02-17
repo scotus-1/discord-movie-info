@@ -11,6 +11,16 @@ def pong():
         return jsonify({
             "type": 1
         })
+    else:
+        return jsonify({
+            "type": 4,
+            "data": {
+                "tts": False,
+                "content": "Congrats on sending your command!",
+                "embeds": [],
+                "allowed_mentions": []
+            }
+        })
 
 @app.route('/')
 def return_html():
