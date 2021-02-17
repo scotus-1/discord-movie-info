@@ -13,7 +13,7 @@ def pong():
         })
     else:
         return jsonify({
-            "type": 2,
+            "type": 5,
             # type4 with message
             # "data": {
             #     "tts": False,
