@@ -1,2 +1,2 @@
-web: gunicorn flaskwebhookresponse:app
+web: gunicorn wsgi:app
 
