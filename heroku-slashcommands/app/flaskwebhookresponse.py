@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from discord_interactions import verify_key_decorator
+import pprint
 
 CLIENT_PUBLIC_KEY = "d164a6f844f2d9b2026508f3e826aeac830b8131ab95d22957f681d4d15b555f"
 app = Flask(__name__)
@@ -12,7 +13,7 @@ def pong():
             "type": 1
         })
     else:
-        print(request.data)
+        pprint.pprint(request.data)
         return jsonify({
             "type": 4,
             "data": {
