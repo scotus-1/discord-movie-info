@@ -13,14 +13,14 @@ def pong():
         })
     else:
         return jsonify({
-            "type": 5,
+            "type": 4,
             # type4 with message
-            # "data": {
-            #     "tts": False,
-            #     "content": "Congrats on sending your command!",
-            #     "embeds": [],
-            #     "allowed_mentions": []
-            # }
+            "data": {
+                "tts": False,
+                "content": "Congrats on sending your command!",
+                "embeds": [],
+                "allowed_mentions": []
+            }
         })
 
 
