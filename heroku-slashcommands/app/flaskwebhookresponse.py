@@ -12,9 +12,9 @@ def pong():
             "type": 1
         })
     else:
+        print(request.data)
         return jsonify({
             "type": 4,
-            # type4 with message
             "data": {
                 "tts": False,
                 "content": "Congrats on sending your command!",
