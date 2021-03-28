@@ -9,12 +9,11 @@ app = Flask(__name__)
 @verify_key_decorator(CLIENT_PUBLIC_KEY)
 def pong():
     if request.json["type"] == 1:
-        pprint(request.json)
         return jsonify({
             "type": 1
         })
     else:
-        pprint(request.data)
+        print(request.data)
         return jsonify({
             "type": 4,
             "data": {
