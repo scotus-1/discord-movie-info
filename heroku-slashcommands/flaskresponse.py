@@ -13,9 +13,10 @@ def pong():
             "type": 1
         })
     else:
-        print(request.data)
 
-        a = request.data['data']
+
+        json_data = jsonify(request.data)
+        a = json_data['data']
         b = a['options']
         c = b[0]
         d = c['value']
