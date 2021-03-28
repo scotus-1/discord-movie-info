@@ -14,6 +14,7 @@ def pong():
         })
     else:
         print(request.data)
+        print(request.data['data']['options'][0]['value'])
         return jsonify({
             "type": 4,
             "data": {
