@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from discord_interactions import verify_key_decorator
 import json
-from pprint import pprint
+import requests
+
 
 CLIENT_PUBLIC_KEY = "d164a6f844f2d9b2026508f3e826aeac830b8131ab95d22957f681d4d15b555f"
 app = Flask(__name__)
@@ -15,24 +16,25 @@ def pong():
         })
     else:
         json_data = json.loads(request.data)
+        print(json_data)
         movie_name = json_data['data']['options'][0]['value']
 
+
         return jsonify({
-            "type": 4,
-            "data": {
-                "tts": False,
-                "content": "Congrats on sending your command!",
-                "embeds": [
-                    {
-                        "title": "Test",
-                        "type": "video",
-                        "color": 4566842,
-                        "video": {"url": "https://www.youtube.com/watch?v=Rh_mIhLpAnA"}
-                    }
-                ],
-                "allowed_mentions": []
-            }
+            "type": 5,
+            # "data": {
+            #     "tts": False,
+            #     "content": "Congrats on sending your command!",
+            #     "embeds": [
+            #         {
+            #             "title": "Test",
+            #             "color": 4566842
+            #         }
+            #     ],
+            #     "allowed_mentions": []
+            # }
         })
 
 
+def respond_info(movie_name, interaction_id):
 
