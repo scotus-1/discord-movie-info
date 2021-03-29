@@ -25,6 +25,7 @@ def pong():
                 "embeds": [
                     {
                         "title": "Test",
+                        "type": "video",
                         "color": 4566842,
                         "video": {"url": "https://www.youtube.com/watch?v=Rh_mIhLpAnA"}
                     }
