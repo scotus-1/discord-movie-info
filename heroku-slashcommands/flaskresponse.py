@@ -14,22 +14,21 @@ def pong():
             "type": 1
         })
     else:
-
-
         json_data = json.loads(request.data)
-        a = json_data['data']
-        b = a['options']
-        c = b[0]
-        d = c['value']
-        print(d)
-
+        movie_name = json_data['data']['options'][0]['value']
 
         return jsonify({
             "type": 4,
             "data": {
                 "tts": False,
                 "content": "Congrats on sending your command!",
-                "embeds": [],
+                "embeds": [
+                    {
+                        "title": "Test",
+                        "color": 4566842,
+                        "video": {"url": "https://www.youtube.com/watch?v=Rh_mIhLpAnA"}
+                    }
+                ],
                 "allowed_mentions": []
             }
         })
