@@ -1,4 +1,6 @@
 import requests
+from pprint import pprint
+
 
 API_ENDPOINT = 'https://discord.com/api/v8'
 CLIENT_ID = '811374808930975785'
@@ -20,14 +22,20 @@ def get_token():
 url = "https://discord.com/api/v8/applications/811374808930975785/guilds/561422744840044564/commands"
 
 json = {
-    "name": "rating",
-    "description": "Get information and rating of a movie or TV Show.",
+    "name": "movie",
+    "description": "Get information and rating of a movie",
     "options": [
         {
-            "name": "name",
-            "description": "Name of the Movie or TV Show",
+            "name": "movie",
+            "description": "Name of the Movie",
             "type": 3,
             "required": True
+        },
+        {
+            "name": "year",
+            "description": "Release year of the movie",
+            "type": 4,
+            "required": False
         }
     ]
 }
@@ -38,5 +46,8 @@ headers = {
     "Authorization": "Bearer " + get_token()
 }
 
-r = requests.post(url, headers=headers, json=json)
+
+r = requests.patch(url + "/825468555578310696", headers=headers, json=json)
+# r = requests.get(url, headers=headers)
+pprint(r.json())
 print(r.status_code)

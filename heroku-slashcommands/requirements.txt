@@ -1,4 +1,4 @@
 flask
 gunicorn
 discord_interactions
-tmdbsimple
+selenium
