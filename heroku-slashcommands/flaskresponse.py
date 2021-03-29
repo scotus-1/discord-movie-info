@@ -20,9 +20,12 @@ utelly_api_key = "0296255ae1msh6d10fea48ea2f6dp1d77bdjsn007a5257a0e2"
 
 
 
-def tmdb_search(movie_name, api_key):
+def tmdb_search(movie_name, api_key, year):
     search_query = {'api_key': api_key,
                     'query': movie_name}
+
+    if year:
+        search_query['year'] = abs(year)
 
     q_str = urlencode(search_query)
     url = tmdb_url + "/search/movie?" + q_str
