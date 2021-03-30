@@ -154,13 +154,13 @@ def respond_info(movie_name, interaction_token, app_id, year):
     providers = movie['watch/providers']['results']['US']
     provider_url = providers['link']
     streaming = providers.get('flatrate')
-    if not None:
+    if streaming is not None:
         streaming = streaming[0]['provider_name']
     renting = providers.get('rent')
-    if not None:
+    if renting is not None:
         renting = renting[0]['provider_name']
     buying = providers.get('buy')
-    if not None:
+    if buying is not None:
         buying = buying[0]['provider_name']
 
 
@@ -239,16 +239,5 @@ def pong():
         thread.start()
 
         return jsonify({
-            "type": 4,
-            "data": {
-                "tts": False,
-                "content": None,
-                "embeds": [
-                    {
-                        "title": "Test",
-                        "color": 4566842
-                    }
-                ],
-                "allowed_mentions": []
-            }
+            "type": 5
         })
