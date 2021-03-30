@@ -6,6 +6,7 @@ from datetime import timedelta
 import app.scraper as scraper
 import threading
 import requests
+import string
 import json
 import os
 import re
@@ -18,12 +19,9 @@ discord_public_key = os.environ.get("DISCORD_CLIENT_PUBLIC_KEY")
 discord_client_id = os.environ.get("DISCORD_CLIENT_ID")
 discord_client_secret = os.environ.get("DISCORD_CLIENT_SECRET")
 
-
 tmdb_api_key = os.environ.get("TMDB_API_KEY")
 
 omdb_api_key = os.environ.get("OMDB_API_KEY")
-
-
 
 
 def get_token():
@@ -42,13 +40,29 @@ def get_token():
   return r.json()['access_token']
 
 
-def remove_special_char(string):
-    removed_apostrophes = re.sub("'", '', string).lower()
+def remove_special_char(text):
+    removed_apostrophes = re.sub("'", '', text).lower()
     cleanString = re.sub('\W+', ' ', removed_apostrophes).lower()
     return cleanString
 
 
-def respond_info(movie_name, interaction_token, app_id, year):
+def rotten_tomatoes_handler(title, title_year, embed, headers, app_id, interaction_token):
+    discord_url = discord_endpoint + f"/webhooks/{app_id}/{interaction_token}/messages/@original"
+
+    rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title_year.replace(" ", "_")
+    rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+    if rt_value == "404":
+        rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title.replace(" ", "_")
+        rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+        if rt_value == "404":
+            rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
+
+    embed['fields'][6]['value'] = f"[{rt_value['critic_score']} | {rt_value['audience_score']}]({rotten_tomatoes_url}) (Critic | Audience)"
+
+    return print(requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).text)
+
+
+def respond_movie_info(movie_name, interaction_token, app_id, year):
     discord_url = discord_endpoint + f"/webhooks/{app_id}/{interaction_token}/messages/@original"
 
     embed = {
@@ -59,9 +73,6 @@ def respond_info(movie_name, interaction_token, app_id, year):
         "footer": {
           "icon_url": "https://pbs.twimg.com/profile_images/1243623122089041920/gVZIvphd.jpg",
           "text": "API's by The Movie DB, Open Movie DB, and JustWatch "
-        },
-        "thumbnail": {
-          "url": None
         },
         "image": {
           "url": None
@@ -99,7 +110,7 @@ def respond_info(movie_name, interaction_token, app_id, year):
           },
           {
             "name": "Rotten Tomatoes:",
-            "value": None,
+            "value": "Pending",
             "inline": True
           }
         ]
@@ -155,13 +166,13 @@ def respond_info(movie_name, interaction_token, app_id, year):
     provider_url = providers['link']
     streaming = providers.get('flatrate')
     if streaming is not None:
-        streaming = streaming[0]['provider_name']
+        streaming = string.capwords(streaming[0]['provider_name'])
     renting = providers.get('rent')
     if renting is not None:
-        renting = renting[0]['provider_name']
+        renting = string.capwords(renting[0]['provider_name'])
     buying = providers.get('buy')
     if buying is not None:
-        buying = buying[0]['provider_name']
+        buying = string.capwords(buying[0]['provider_name'])
 
 
     embed['description'] = "\n" + movie['overview'] + "\n\n" + \
@@ -192,21 +203,17 @@ def respond_info(movie_name, interaction_token, app_id, year):
 
     embed['fields'][5]['value'] = f"[{metacritic_scores['metascore']} | {metacritic_scores['user_score']} / 10.0]({metacritic_url})"
 
+    rotten_tomatoes_thread = threading.Thread(target=rotten_tomatoes_handler,kwargs={
+        "title": title,
+        "title_year": title_with_year,
+        "embed": embed,
+        "headers": headers,
+        "app_id": app_id,
+        "interaction_token": interaction_token})
 
-    rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title_with_year.replace(" ", "_")
-    rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
-    if rt_value == "404":
-        rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title.replace(" ", "_")
+    rotten_tomatoes_thread.start()
 
-        rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
-
-    embed['fields'][6]['value'] = f"[{rt_value['critic_score']} | {rt_value['audience_score']}]({rotten_tomatoes_url}) (Critic | Audience)"
-    embed['thumbnail']['url'] = rt_value['critic_icon']
-
-
-
-    print(rt_value)
-    return print(requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).json)
+    return print(requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).text)
 
 
 
@@ -232,7 +239,7 @@ def pong():
         token = json_data['token']
         application_id = json_data['application_id']
 
-        thread = threading.Thread(target=respond_info,
+        thread = threading.Thread(target=respond_movie_info,
                                   kwargs={
                                       "movie_name": search_query,
                                       "interaction_token": token,

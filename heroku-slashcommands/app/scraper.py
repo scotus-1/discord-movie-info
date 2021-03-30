@@ -55,18 +55,8 @@ def scrape_rotten_tomatoes(rt_url):
 
     driver.close()
 
-    if "certified_fresh" in critic_icon:
-        critic_icon = rotten_tomatoes_url + "/assets/pizza-pie/images/icons/tomatometer/certified_fresh.75211285dbb.svg"
-    elif "fresh" in critic_icon:
-        critic_icon = rotten_tomatoes_url + "/assets/pizza-pie/images/icons/tomatometer/tomatometer-fresh.149b5e8adc3.svg"
-    elif "rotten" in critic_icon:
-        critic_icon = rotten_tomatoes_url + "/assets/pizza-pie/images/icons/tomatometer/tomatometer-rotten.f1ef4f02ce3.svg"
-    else:
-        critic_icon = None
-    # return critic_score, audience_score, critic_icon
 
-
-    return {"critic_score": critic_score, "audience_score": audience_score, "critic_icon": critic_icon}
+    return {"critic_score": critic_score, "audience_score": audience_score}
 
 
 def metacritic_scrape(url):
@@ -82,6 +72,7 @@ def metacritic_scrape(url):
 
     for item in soup.find_all("a", class_="metascore_anchor"):
         if "</span>" in str(item):
+            print(item.text.strip())
             scores.append(item.text.strip())
 
     return {"metascore": scores[0], "user_score": scores[1]}
