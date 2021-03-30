@@ -202,7 +202,7 @@ def respond_info(movie_name, interaction_token, app_id, year):
     # embed['fields'][6]['value'] = f"{rt_value['critic_score']} | {rt_value['audience_score']} (Critic | Audience)"
     # embed['thumbnail']['url'] = rt_value['critic_icon']
 
-    return print(requests.patch(discord_url, headers=headers, json={"embeds": [embed]}))
+    return print(requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).json)
 
 
 
@@ -226,7 +226,7 @@ def pong():
             search_year = None
 
         token = json_data['token']
-        application_id = json_data['id']
+        application_id = json_data['application_id']
 
         thread = threading.Thread(target=respond_info,
                                   kwargs={
