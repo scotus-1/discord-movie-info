@@ -5,6 +5,7 @@ from iso639 import languages
 from datetime import timedelta
 import app.scraper as scraper
 import threading
+import traceback
 import requests
 import json
 import os
@@ -66,7 +67,7 @@ def rotten_tomatoes_handler(title, title_year, embed, headers, app_id, interacti
 
     embed['fields'][6]['value'] = f"[{rt_value['critic_score']} | {rt_value['audience_score']}]({rotten_tomatoes_url}) (Critic | Audience)"
 
-    return print(requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).text)
+    return requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).text
 
 
 def respond_movie_info(movie_name, interaction_token, app_id, year):
@@ -174,17 +175,17 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
         provider_url = providers['link']
         streaming = providers.get('flatrate')
         if streaming is not None:
-            streaming = capitalize(streaming[0]['provider_name'])
+            streaming = streaming[0]['provider_name']
         renting = providers.get('rent')
         if renting is not None:
-            renting = capitalize(renting[0]['provider_name'])
+            renting = renting[0]['provider_name']
         buying = providers.get('buy')
         if buying is not None:
-            buying = capitalize(buying[0]['provider_name'])
+            buying = buying[0]['provider_name']
 
 
         embed['description'] = "\n" + movie['overview'] + "\n\n" + \
-                               f"[```prolog\n'Stream': {streaming} | 'Rent': {renting} | 'Buy': {buying} | 'US'```]({provider_url})"
+                               f"[```md\n<Stream: {streaming}> <Rent: {renting}> <Buy: {buying}> 'US'```]({provider_url})"
 
         embed['url'] = "https://themoviedb.org/movie/" + str(movie['id'])
         embed['image']['url'] = omdb_info['Poster'].replace("_V1_SX300","_V1_SX3000")
@@ -223,18 +224,19 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
 
         rotten_tomatoes_thread.start()
 
-        return print(requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).text)
+        return requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).text
     except Exception as e:
-        app.logger.error(e)
-        return print(requests.patch(discord_url, headers=headers, json={"embeds": [
+        traceback.print_exc()
+        return requests.patch(discord_url, headers=headers, json={"embeds": [
                 {"title": "Internal Server Error (505) ",
                  "description": e.__doc__,
-                 "color": 16711680}]}))
+                 "color": 16711680}]})
     except:
-        return print(requests.patch(discord_url, headers=headers, json={"embeds": [
+        traceback.print_exc()
+        return requests.patch(discord_url, headers=headers, json={"embeds": [
             {"title": "Internal Server Error (505) ",
              "description": "Unknown Error, Check Server Logs",
-             "color": 16711680}]}))
+             "color": 16711680}]})
 
 
 @app.route('/interactions', methods=['POST'])
