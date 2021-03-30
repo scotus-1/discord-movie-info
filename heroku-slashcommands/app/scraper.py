@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import NoSuchElementException
+import os
 from requests import get
 import bs4
 
@@ -10,7 +11,7 @@ import bs4
 rotten_tomatoes_url = "https://www.rottentomatoes.com"
 
 
-def scrape_rotten_tomatoes(rt_url):
+def scrape_rotten_tomatoes(rt_url, webdriver_path):
     options = webdriver.ChromeOptions()
     prefs = {
             'profile.default_content_setting_values': {
@@ -22,9 +23,11 @@ def scrape_rotten_tomatoes(rt_url):
 
     options.add_experimental_option("prefs", prefs)
     options.add_argument('headless')
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 
-
-    driver = webdriver.Chrome('/app/chromedriver', options=options)
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
     driver.get(rt_url)
 
     try:
