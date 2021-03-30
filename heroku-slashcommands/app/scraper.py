@@ -11,7 +11,7 @@ import bs4
 rotten_tomatoes_url = "https://www.rottentomatoes.com"
 
 
-def scrape_rotten_tomatoes(rt_url, webdriver_path):
+def scrape_rotten_tomatoes(rt_url):
     options = webdriver.ChromeOptions()
     prefs = {
             'profile.default_content_setting_values': {
@@ -31,7 +31,7 @@ def scrape_rotten_tomatoes(rt_url, webdriver_path):
     driver.get(rt_url)
 
     try:
-        test_404 = driver.find_elements_by_xpath("//*[contains(text(), '404 - Not Found')]")
+        driver.find_elements_by_xpath("//*[contains(text(), '404 - Not Found')]")
         driver.close()
         return "404"
     except NoSuchElementException:
