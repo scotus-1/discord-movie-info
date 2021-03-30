@@ -1,4 +1,4 @@
-from flaskresponse import app
+from app.flaskresponse import app
 
 
 if __name__ == "__main__":

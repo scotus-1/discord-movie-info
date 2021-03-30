@@ -33,7 +33,7 @@ json = {
         },
         {
             "name": "year",
-            "description": "Release year of the movie",
+            "description": "Input the closest year to the target movie",
             "type": 4,
             "required": False
         }

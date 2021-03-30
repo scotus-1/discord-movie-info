@@ -3,3 +3,4 @@ gunicorn
 discord_interactions
 selenium
 requests
+beautifulsoup4
