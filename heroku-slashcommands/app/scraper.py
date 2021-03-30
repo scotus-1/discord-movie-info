@@ -24,7 +24,7 @@ def scrape_rotten_tomatoes(rt_url):
     options.add_argument('headless')
 
 
-    driver = webdriver.Chrome('./chromedriver.exe', options=options)
+    driver = webdriver.Chrome('./app/chromedriver.exe', options=options)
     driver.get(rt_url)
 
     try:
