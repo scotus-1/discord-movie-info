@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from discord_interactions import verify_key_decorator
 import json
-import api_functions
+import app.api_functions as api_functions
 import threading
 import os
 
