@@ -64,6 +64,10 @@ def scrape_rotten_tomatoes(rt_url):
     else:
         critic_icon = None
     # return critic_score, audience_score, critic_icon
+
+    print(critic_score + audience_score + critic_icon)
+
+
     return {"critic_score": critic_score, "audience_score": audience_score, "critic_icon": critic_icon}
 
 
