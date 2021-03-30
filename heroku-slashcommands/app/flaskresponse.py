@@ -46,8 +46,8 @@ def remove_special_char(text):
     return cleanString
 
 
-def captilize(text):
-    return " ".join([word[0].upper() for word in text.split(" ")])
+def capitalize(text):
+    return " ".join([word[0].upper() for word in text.split(" ") if word.isalnum()])
 
 
 def rotten_tomatoes_handler(title, title_year, embed, headers, app_id, interaction_token):
@@ -73,7 +73,6 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
     }
 
     try:
-
         embed = {
             "title": None,
             "description": None,
@@ -172,20 +171,20 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
         provider_url = providers['link']
         streaming = providers.get('flatrate')
         if streaming is not None:
-            streaming = string.capwords(streaming[0]['provider_name'])
+            streaming = capitalize(streaming[0]['provider_name'])
         renting = providers.get('rent')
         if renting is not None:
-            renting = string.capwords(renting[0]['provider_name'])
+            renting = capitalize(renting[0]['provider_name'])
         buying = providers.get('buy')
         if buying is not None:
-            buying = string.capwords(buying[0]['provider_name'])
+            buying = capitalize(buying[0]['provider_name'])
 
 
         embed['description'] = "\n" + movie['overview'] + "\n\n" + \
                                f"[```prolog\n'Stream': {streaming} | 'Rent': {renting} | 'Buy': {buying} | 'US'```]({provider_url})"
 
         embed['url'] = "https://themoviedb.org/movie/" + str(movie['id'])
-        embed['image']['url'] = omdb_info['Poster']
+        embed['image']['url'] = omdb_info['Poster'].replace("_V1_SX300","_V1_SX600")
 
         embed['fields'][0]['value'] = omdb_info['Genre']
         embed['fields'][1]['value'] = languages.get(alpha2=movie['original_language']).name
@@ -227,8 +226,11 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
                 {"title": "Internal Server Error (505) ",
                  "description": e.__doc__,
                  "color": 16711680}]}))
-
-
+    except:
+        return print(requests.patch(discord_url, headers=headers, json={"embeds": [
+            {"title": "Internal Server Error (505) ",
+             "description": "Unknown Error, Check Server Logs",
+             "color": 16711680}]}))
 
 
 @app.route('/interactions', methods=['POST'])
