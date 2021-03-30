@@ -199,7 +199,7 @@ def respond_info(movie_name, interaction_token, app_id, year):
         rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title.replace(" ", "_")
         rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
 
-    embed['fields'][6]['value'] = f"{rt_value['critic_score']} | {rt_value['audience_score']} (Critic | Audience)"
+    # embed['fields'][6]['value'] = f"{rt_value['critic_score']} | {rt_value['audience_score']} (Critic | Audience)"
     embed['thumbnail']['url'] = rt_value['critic_icon']
 
     return requests.patch(discord_url, headers=headers, json={"embeds": [embed]})

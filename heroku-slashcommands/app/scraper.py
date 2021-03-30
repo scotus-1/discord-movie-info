@@ -3,9 +3,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import NoSuchElementException
-import os
 from requests import get
+import logging
 import bs4
+import os
 
 
 rotten_tomatoes_url = "https://www.rottentomatoes.com"
@@ -65,7 +66,7 @@ def scrape_rotten_tomatoes(rt_url):
         critic_icon = None
     # return critic_score, audience_score, critic_icon
 
-    print(critic_score + audience_score + critic_icon)
+    logging.log("INFO",critic_score + audience_score + critic_icon)
 
 
     return {"critic_score": critic_score, "audience_score": audience_score, "critic_icon": critic_icon}
