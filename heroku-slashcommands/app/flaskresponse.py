@@ -181,8 +181,8 @@ def respond_info(movie_name, interaction_token, app_id, year):
     imdb_url = "https://imdb.com/title/" + movie['imdb_id']
     embed['fields'][4]['value'] = f"[{omdb_info['imdbRating']} / 10 - {omdb_info['imdbVotes']} votes]({imdb_url})"
 
-    title = remove_special_char(movie['title'])
-    title_with_year = remove_special_char(movie['title'] + " " + release_year)
+    title = remove_special_char(movie['title']).lower()
+    title_with_year = remove_special_char(movie['title'] + " " + release_year).lower()
 
     metacritic_url = "https://metacritic.com/movie/" + title_with_year.replace(" ","-")
     metacritic_scores = scraper.metacritic_scrape(metacritic_url)
@@ -200,7 +200,7 @@ def respond_info(movie_name, interaction_token, app_id, year):
         rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
 
     # embed['fields'][6]['value'] = f"{rt_value['critic_score']} | {rt_value['audience_score']} (Critic | Audience)"
-    embed['thumbnail']['url'] = rt_value['critic_icon']
+    # embed['thumbnail']['url'] = rt_value['critic_icon']
 
     return requests.patch(discord_url, headers=headers, json={"embeds": [embed]})
 
