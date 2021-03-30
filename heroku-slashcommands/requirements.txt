@@ -4,3 +4,4 @@ discord_interactions
 selenium
 requests
 beautifulsoup4
+iso-369

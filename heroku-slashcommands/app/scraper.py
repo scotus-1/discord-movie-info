@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.common.exceptions import NoSuchElementException
 from requests import get
 import bs4
 
@@ -26,6 +27,14 @@ def scrape_rotten_tomatoes(rt_url):
     driver = webdriver.Chrome('./chromedriver.exe', options=options)
     driver.get(rt_url)
 
+    try:
+        test_404 = driver.find_elements_by_xpath("//*[contains(text(), '404 - Not Found')]")
+        driver.close()
+        return "404"
+    except NoSuchElementException:
+        pass
+
+
     element1 = WebDriverWait(driver, 3).until(ec.presence_of_element_located((By.TAG_NAME, "score-board")))
 
     shadowRoot1 = driver.execute_script("return arguments[0].shadowRoot", element1)
@@ -49,8 +58,10 @@ def scrape_rotten_tomatoes(rt_url):
         critic_icon = rotten_tomatoes_url + "/assets/pizza-pie/images/icons/tomatometer/tomatometer-fresh.149b5e8adc3.svg"
     elif "rotten" in critic_icon:
         critic_icon = rotten_tomatoes_url + "/assets/pizza-pie/images/icons/tomatometer/tomatometer-rotten.f1ef4f02ce3.svg"
-
-    return critic_score, audience_score, critic_icon
+    else:
+        critic_icon = None
+    # return critic_score, audience_score, critic_icon
+    return {"critic_score": critic_score, "audience_score": audience_score, "critic_icon": critic_icon}
 
 
 def metacritic_scrape(url):
@@ -59,11 +70,14 @@ def metacritic_scrape(url):
     response = get(url, headers=headers)
     soup = bs4.BeautifulSoup(response.text, 'html.parser')
 
+    if soup.find_all("span", "error_code"):
+        return "404"
+
     scores = []
 
     for item in soup.find_all("a", class_="metascore_anchor"):
         if "</span>" in str(item):
             scores.append(item.text.strip())
 
-    return scores
+    return {"metascore": scores[0], "user_score": scores[1]}
 
