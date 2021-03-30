@@ -206,10 +206,12 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
 
         metacritic_url = "https://metacritic.com/movie/" + title_with_year.replace(" ","-")
         metacritic_scores = scraper.metacritic_scrape(metacritic_url)
+        print(metacritic_scores)
         if metacritic_scores == "404":
             metacritic_url = "https://metacritic.com/movie/" + title.replace(" ","-")
             metacritic_scores = scraper.metacritic_scrape(metacritic_url)
-            if metacritic_url == "404":
+            print(metacritic_scores)
+            if metacritic_scores == "404":
                 metacritic_scores = {"metascore": "N/A", "user_score": "N/A"}
 
         embed['fields'][5]['value'] = f"[{metacritic_scores['metascore']} | {metacritic_scores['user_score']} / 10.0]({metacritic_url})"
