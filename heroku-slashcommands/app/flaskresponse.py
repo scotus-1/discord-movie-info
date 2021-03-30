@@ -111,7 +111,7 @@ def respond_info(movie_name, interaction_token, app_id, year):
 
     search = api_functions.tmdb_search(movie_name, tmdb_api_key, year)
 
-    if search is None:
+    if search['results'] is None:
         return requests.patch(discord_url, headers=headers, json={"embeds": [
             {"title": "Movie Not Found",
              "description": "Please try again with a better search query",
