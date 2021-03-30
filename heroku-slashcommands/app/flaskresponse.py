@@ -46,7 +46,11 @@ def remove_special_char(text):
 
 
 def capitalize(text):
-    return " ".join([word[0].upper() for word in text.split(" ")])
+    words = []
+    for word in text.split(" "):
+        word[0].upper()
+        words.append(word)
+    return " ".join(words)
 
 
 def rotten_tomatoes_handler(title, title_year, embed, headers, app_id, interaction_token):
