@@ -99,7 +99,7 @@ def respond_info(movie_name, interaction_token, app_id, year):
           },
           {
             "name": "Rotten Tomatoes:",
-            "value": None,
+            "value": "On Maintanance",
             "inline": True
           }
         ]
