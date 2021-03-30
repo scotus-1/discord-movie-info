@@ -51,7 +51,6 @@ def scrape_rotten_tomatoes(rt_url):
     critic_score = shadowRoot_critic.find_elements_by_tag_name("span")[1].text
     audience_score = shadowRoot_audience.find_elements_by_tag_name("span")[1].text
 
-    critic_icon = shadowRoot_critic.find_elements_by_tag_name("span")[0].get_attribute("class")
 
     driver.close()
 

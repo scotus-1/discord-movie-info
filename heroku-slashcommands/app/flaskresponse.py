@@ -122,7 +122,7 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
               },
               {
                 "name": "Rotten Tomatoes:",
-                "value": "Pending",
+                "value": "Pending...",
                 "inline": True
               }
             ]
