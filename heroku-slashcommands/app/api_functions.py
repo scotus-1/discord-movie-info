@@ -42,5 +42,5 @@ def omdb_info(imdb_id, api_key):
     return response.json()
 
 
-pprint(tmdb_info(str(129), "d035ca2d122538bc314de1ce4b98fdd9"))
+
 
