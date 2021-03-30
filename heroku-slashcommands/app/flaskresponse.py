@@ -99,7 +99,7 @@ def respond_info(movie_name, interaction_token, app_id, year):
           },
           {
             "name": "Rotten Tomatoes:",
-            "value": "On Maintanance",
+            "value": None,
             "inline": True
           }
         ]
@@ -111,7 +111,7 @@ def respond_info(movie_name, interaction_token, app_id, year):
 
     search = api_functions.tmdb_search(movie_name, tmdb_api_key, year)
 
-    if not search['results']:
+    if search['results'].len() == 0:
         return requests.patch(discord_url, headers=headers, json={"embeds": [
             {"title": "Movie Not Found",
              "description": "Please try again with a better search query",
@@ -165,7 +165,7 @@ def respond_info(movie_name, interaction_token, app_id, year):
 
 
     embed['description'] = "\n" + movie['overview'] + "\n\n" + \
-                           f"[```prolog\n'Stream': {streaming} | 'Rent': {renting} | 'Buy': {buying} | 'US'```)]({provider_url})"
+                           f"[```prolog\n'Stream': {streaming} | 'Rent': {renting} | 'Buy': {buying} | 'US'```]({provider_url})"
 
     embed['url'] = "https://themoviedb.org/movie/" + str(movie['id'])
     embed['image']['url'] = omdb_info['Poster']
@@ -190,19 +190,18 @@ def respond_info(movie_name, interaction_token, app_id, year):
         metacritic_url = "https://metacritic.com/movie/" + title.replace(" ","-")
         metacritic_scores = scraper.metacritic_scrape(metacritic_url)
 
-    embed['fields'][5]['value'] = f"{metacritic_scores['metascore']} | {metacritic_scores['user_score']} / 10.0"
+    embed['fields'][5]['value'] = f"[{metacritic_scores['metascore']} | {metacritic_scores['user_score']} / 10.0]({metacritic_url})"
 
 
     rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title_with_year.replace(" ", "_")
-    print(rotten_tomatoes_url)
     rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
     if rt_value == "404":
         rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title.replace(" ", "_")
-        print(rotten_tomatoes_url)
+
         rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
 
-    # embed['fields'][6]['value'] = f"{rt_value['critic_score']} | {rt_value['audience_score']} (Critic | Audience)"
-    # embed['thumbnail']['url'] = rt_value['critic_icon']
+    embed['fields'][6]['value'] = f"[{rt_value['critic_score']} | {rt_value['audience_score']}]({rotten_tomatoes_url}) (Critic | Audience)"
+    embed['thumbnail']['url'] = rt_value['critic_icon']
 
 
 
