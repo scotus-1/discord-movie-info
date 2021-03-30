@@ -31,7 +31,7 @@ def scrape_rotten_tomatoes(rt_url):
     driver.get(rt_url)
 
     try:
-        driver.find_element_by_xpath("//*[contains(text(), '404 - Not Found')]"
+        driver.find_element_by_xpath("//*[contains(text(), '404 - Not Found')]")
         driver.close()
         return "404"
     except NoSuchElementException:
