@@ -72,7 +72,6 @@ def metacritic_scrape(url):
 
     for item in soup.find_all("a", class_="metascore_anchor"):
         if "</span>" in str(item):
-            print(item.text.strip())
             scores.append(item.text.strip())
 
     return {"metascore": scores[0], "user_score": scores[1]}
