@@ -194,13 +194,17 @@ def respond_info(movie_name, interaction_token, app_id, year):
 
 
     rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title_with_year.replace(" ", "_")
+    print(rotten_tomatoes_url)
     rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
     if rt_value == "404":
         rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title.replace(" ", "_")
+        print(rotten_tomatoes_url)
         rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
 
     # embed['fields'][6]['value'] = f"{rt_value['critic_score']} | {rt_value['audience_score']} (Critic | Audience)"
     # embed['thumbnail']['url'] = rt_value['critic_icon']
+
+
 
     print(rt_value)
     return print(requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).json)
