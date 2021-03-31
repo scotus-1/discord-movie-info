@@ -59,8 +59,13 @@ def rotten_tomatoes_handler(title, title_year, embed, headers, app_id, interacti
 
 
     if "the" in title.split(" ")[0]:
-        words = " ".join(title_year.split(" ").pop(0))
-        word = " ".join(title.split(" ").pop(0))
+        words = title_year.split(" ")
+        words.pop(0)
+        words = " ".join(words)
+
+        word = title.split(" ")
+        word.pop(0)
+        word = " ".join(word)
 
         rotten_tomatoes_url = "https://rottentomatoes.com/m/" + words.replace(" ", "_")
         rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
