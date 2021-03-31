@@ -64,15 +64,19 @@ def rotten_tomatoes_handler(title, title_year, embed, headers, app_id, interacti
 
         rotten_tomatoes_url = "https://rottentomatoes.com/m/" + words.replace(" ", "_")
         rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+        print(rotten_tomatoes_url)
         if rt_value == "404":
             rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title_year.replace(" ", "_")
             rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+            print(rotten_tomatoes_url)
             if rt_value == "404":
                 rotten_tomatoes_url = "https://rottentomatoes.com/m/" + word.replace(" ", "_")
                 rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+                print(rotten_tomatoes_url)
                 if rt_value == "404":
                     rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title.replace(" ", "_")
                     rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+                    print(rotten_tomatoes_url)
                     if rt_value == "404":
                         rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
     else:

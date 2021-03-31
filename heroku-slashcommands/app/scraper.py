@@ -64,19 +64,23 @@ def scrape_rotten_tomatoes(rt_url):
 
 
 def metacritic_scrape(url):
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
+    try:
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
 
-    response = get(url, headers=headers)
-    soup = bs4.BeautifulSoup(response.text, 'html.parser')
+        response = get(url, headers=headers)
+        soup = bs4.BeautifulSoup(response.text, 'html.parser')
 
-    if soup.find_all("span", "error_code"):
-        return "404"
+        if soup.find_all("span", "error_code"):
+            return "404"
 
-    scores = []
+        scores = []
 
-    for item in soup.find_all("a", class_="metascore_anchor"):
-        if "</span>" in str(item):
-            scores.append(item.text.strip())
+        for item in soup.find_all("a", class_="metascore_anchor"):
+            if "</span>" in str(item):
+                scores.append(item.text.strip())
 
-    return {"metascore": scores[0], "user_score": scores[1]}
+        return {"metascore": scores[0], "user_score": scores[1]}
+    except:
+        traceback.print_exc()
+        return {"metascore": "--", "user_score": "--"}
 
