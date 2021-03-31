@@ -57,13 +57,33 @@ def capitalize(text):
 def rotten_tomatoes_handler(title, title_year, embed, headers, app_id, interaction_token):
     discord_url = discord_endpoint + f"/webhooks/{app_id}/{interaction_token}/messages/@original"
 
-    rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title_year.replace(" ", "_")
-    rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
-    if rt_value == "404":
-        rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title.replace(" ", "_")
+
+    if "the" in title.split(" ")[0]:
+        words = " ".join(title_year.split(" ").remove(0))
+        word = " ".join(title.split(" ").remove(0))
+
+        rotten_tomatoes_url = "https://rottentomatoes.com/m/" + words.replace(" ", "_")
         rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
         if rt_value == "404":
-            rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
+            rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title_year.replace(" ", "_")
+            rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+            if rt_value == "404":
+                rotten_tomatoes_url = "https://rottentomatoes.com/m/" + word.replace(" ", "_")
+                rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+                if rt_value == "404":
+                    rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title.replace(" ", "_")
+                    rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+                    if rt_value == "404":
+                        rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
+    else:
+        rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title_year.replace(" ", "_")
+        rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+        if rt_value == "404":
+            rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title.replace(" ", "_")
+            rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+            if rt_value == "404":
+                rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
+
 
     embed['fields'][6]['value'] = f"[{rt_value['critic_score']} | {rt_value['audience_score']}]({rotten_tomatoes_url}) (Critic | Audience)"
 
@@ -206,11 +226,11 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
 
         metacritic_url = "https://metacritic.com/movie/" + title_with_year.replace(" ","-")
         metacritic_scores = scraper.metacritic_scrape(metacritic_url)
-        print(metacritic_scores)
+
         if metacritic_scores == "404":
             metacritic_url = "https://metacritic.com/movie/" + title.replace(" ","-")
             metacritic_scores = scraper.metacritic_scrape(metacritic_url)
-            print(metacritic_scores)
+
             if metacritic_scores == "404":
                 metacritic_scores = {"metascore": "N/A", "user_score": "N/A"}
 

@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import NoSuchElementException
 from requests import get
+import traceback
 import bs4
 import os
 
@@ -37,25 +38,29 @@ def scrape_rotten_tomatoes(rt_url):
     except NoSuchElementException:
         pass
 
+    try:
+        element1 = WebDriverWait(driver, 3).until(ec.presence_of_element_located((By.TAG_NAME, "score-board")))
 
-    element1 = WebDriverWait(driver, 3).until(ec.presence_of_element_located((By.TAG_NAME, "score-board")))
+        shadowRoot1 = driver.execute_script("return arguments[0].shadowRoot", element1)
 
-    shadowRoot1 = driver.execute_script("return arguments[0].shadowRoot", element1)
+        element_critic = shadowRoot1.find_element_by_tag_name("score-icon-critic")
+        element_audience = shadowRoot1.find_element_by_tag_name("score-icon-audience")
 
-    element_critic = shadowRoot1.find_element_by_tag_name("score-icon-critic")
-    element_audience = shadowRoot1.find_element_by_tag_name("score-icon-audience")
+        shadowRoot_critic = driver.execute_script("return arguments[0].shadowRoot", element_critic)
+        shadowRoot_audience = driver.execute_script("return arguments[0].shadowRoot", element_audience)
 
-    shadowRoot_critic = driver.execute_script("return arguments[0].shadowRoot", element_critic)
-    shadowRoot_audience = driver.execute_script("return arguments[0].shadowRoot", element_audience)
-
-    critic_score = shadowRoot_critic.find_elements_by_tag_name("span")[1].text
-    audience_score = shadowRoot_audience.find_elements_by_tag_name("span")[1].text
-
-
-    driver.close()
+        critic_score = shadowRoot_critic.find_elements_by_tag_name("span")[1].text
+        audience_score = shadowRoot_audience.find_elements_by_tag_name("span")[1].text
 
 
-    return {"critic_score": critic_score, "audience_score": audience_score}
+        driver.close()
+        return {"critic_score": critic_score, "audience_score": audience_score}
+    except:
+        traceback.print_exc()
+        return {"critic_score": "N/A", "audience_score": "N/A"}
+
+
+
 
 
 def metacritic_scrape(url):
