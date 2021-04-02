@@ -4,7 +4,7 @@ import app.api_functions as api_functions
 from iso639 import languages
 from datetime import timedelta
 import app.scraper as scraper
-from random import choice
+from random import randint
 import threading
 import traceback
 import requests
@@ -218,7 +218,7 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
                                f"[```md\n<Stream: {streaming}> <Rent: {renting}> <Buy: {buying}> 'US'```]({provider_url})"
 
         embed['url'] = "https://themoviedb.org/movie/" + str(movie['id'])
-        embed['image']['url'] = choice("https://image.tmdb.org/t/p/original" + movie['poster_path'], omdb_info['Poster'])
+        embed['image']['url'] = ["https://image.tmdb.org/t/p/original" + movie['poster_path'], omdb_info['Poster']][randint(0,1)]
 
         embed['fields'][0]['value'] = omdb_info['Genre']
         embed['fields'][1]['value'] = languages.get(alpha2=movie['original_language']).name
