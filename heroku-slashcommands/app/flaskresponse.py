@@ -102,11 +102,12 @@ def rotten_tomatoes_handler(title, title_year, embed, headers, app_id, interacti
 
 def respond_movie_info(movie_name, interaction_token, app_id, year):
     discord_url = discord_endpoint + f"/webhooks/{app_id}/{interaction_token}/messages/@original"
-    headers = {
-        "Authorization": "Bearer " + get_token()
-    }
+
 
     try:
+        headers = {
+            "Authorization": "Bearer " + get_token()
+        }
         embed = {
             "title": None,
             "description": None,
@@ -219,7 +220,7 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
 
         embed['url'] = "https://themoviedb.org/movie/" + str(movie['id'])
         embed['image']['url'] = choice(["https://image.tmdb.org/t/p/original" + movie['poster_path'],
-                                        omdb_info['Poster'],
+                                        omdb_info['Poster'].replace("_V1_SX300", "_V1_SX3000"),
                                         "https://image.tmdb.org/t/p/original" + movie['backdrop_path']])
 
 
@@ -261,12 +262,22 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
 
         return requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).text
     except Exception as e:
+        headers = {
+            "Authorization": "Bearer " + get_token()
+        }
+
+
         traceback.print_exc()
         return requests.patch(discord_url, headers=headers, json={"embeds": [
                 {"title": "Internal Server Error (505) ",
                  "description": e.__doc__,
                  "color": 16711680}]})
     except:
+        headers = {
+            "Authorization": "Bearer " + get_token()
+        }
+
+
         traceback.print_exc()
         return requests.patch(discord_url, headers=headers, json={"embeds": [
             {"title": "Internal Server Error (505) ",
