@@ -39,7 +39,7 @@ def scrape_rotten_tomatoes(rt_url):
         pass
 
     try:
-        element1 = WebDriverWait(driver, 3).until(ec.presence_of_element_located((By.TAG_NAME, "score-board")))
+        element1 = WebDriverWait(driver, 10).until(ec.presence_of_element_located((By.TAG_NAME, "score-board")))
 
         shadowRoot1 = driver.execute_script("return arguments[0].shadowRoot", element1)
 
