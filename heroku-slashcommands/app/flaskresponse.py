@@ -217,7 +217,7 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
                                f"[```md\n<Stream: {streaming}> <Rent: {renting}> <Buy: {buying}> 'US'```]({provider_url})"
 
         embed['url'] = "https://themoviedb.org/movie/" + str(movie['id'])
-        embed['image']['url'] = omdb_info['Poster'].replace("_V1_SX300","_V1_SX3000")
+        embed['image']['url'] = "https://image.tmdb.org/t/p/original" + movie['poster_path']
 
         embed['fields'][0]['value'] = omdb_info['Genre']
         embed['fields'][1]['value'] = languages.get(alpha2=movie['original_language']).name
