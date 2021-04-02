@@ -15,7 +15,7 @@ import re
 
 app = Flask(__name__)
 
-discord_endpoint = "https://discord.com/api/v8"
+discord_endpoint = "https://discord.com/api"
 discord_public_key = os.environ.get("DISCORD_CLIENT_PUBLIC_KEY")
 discord_client_id = os.environ.get("DISCORD_CLIENT_ID")
 discord_client_secret = os.environ.get("DISCORD_CLIENT_SECRET")
