@@ -14,7 +14,7 @@ def scrape_rotten_tomatoes(rt_url, request_session, driver):
         response.raw.decode_content = True
         tree = lxml.html.parse(response.raw)
 
-        tree.xpath("//*[contains(text(), '404 - Not Found')]")
+        print(tree.xpath("//*[contains(text(), '404 - Not Found')]"))
         return "404"
     except:
         traceback.print_exc()
