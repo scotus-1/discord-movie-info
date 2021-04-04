@@ -318,7 +318,7 @@ def pong():
         search_query = json_data['data']['options'][0]['value']
 
         try:
-            search_year = json_data['data']['options'][1]['value']
+            search_year = int(json_data['data']['options'][1]['value'])
         except IndexError:
             search_year = None
 
