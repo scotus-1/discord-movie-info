@@ -13,15 +13,11 @@ def scrape_rotten_tomatoes(rt_url, request_session, driver):
         response = request_session.get(rt_url, stream=True)
         response.raw.decode_content = True
         tree = lxml.html.parse(response.raw)
-
+        print(tree.xpath("//*[contains(text(), '404 - Not Found')]"))
         if tree.xpath("//*[contains(text(), '404 - Not Found')]") is not None:
+
             return "404"
-    except:
-        traceback.print_exc()
 
-
-
-    try:
         driver.get(rt_url)
         element1 = WebDriverWait(driver, 10).until(ec.presence_of_element_located((By.TAG_NAME, "score-board")))
 
