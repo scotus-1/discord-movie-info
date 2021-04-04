@@ -1,3 +1,4 @@
+from selenium import webdriver
 from flask import Flask, request, jsonify
 from discord_interactions import verify_key_decorator
 import app.api_functions as api_functions
@@ -12,9 +13,10 @@ import json
 import os
 import re
 
-
+# create Flask App
 app = Flask(__name__)
 
+# create global keys and secrets
 discord_endpoint = "https://discord.com/api"
 discord_public_key = os.environ.get("DISCORD_CLIENT_PUBLIC_KEY")
 discord_client_id = os.environ.get("DISCORD_CLIENT_ID")
@@ -24,7 +26,23 @@ tmdb_api_key = os.environ.get("TMDB_API_KEY")
 
 omdb_api_key = os.environ.get("OMDB_API_KEY")
 
+options = webdriver.ChromeOptions()
+prefs = {
+    'profile.default_content_setting_values': {
+        'images': 2,
+        'permissions.default.stylesheet': 2,
+        'javascript': 2
+    }
+}
+options.add_experimental_option("prefs", prefs)
+options.add_argument('headless')
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--no-sandbox")
+options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 
+driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
+
+# token retrieval
 def get_token():
   data = {
     'grant_type': 'client_credentials',
@@ -41,22 +59,25 @@ def get_token():
   return r.json()['access_token']
 
 
+# discord auth headers
+auth_headers = {
+            "Authorization": "Bearer " + get_token()
+        }
+
+# special character removal function
 def remove_special_char(text):
     removed_apostrophes = re.sub("'", '', text).lower()
-    cleanString = re.sub('\W+', ' ', removed_apostrophes).lower()
-    return cleanString
+    return re.sub('\W+', ' ', removed_apostrophes).lower()
 
 
-def capitalize(text):
-    words = []
-    for word in text.split(" "):
-        word[0].upper()
-        words.append(word)
-    return " ".join(words)
 
-
-def rotten_tomatoes_handler(title, title_year, embed, headers, app_id, interaction_token):
+def rotten_tomatoes_handler(media_type, title, title_year, embed, app_id, interaction_token, session):
     discord_url = discord_endpoint + f"/webhooks/{app_id}/{interaction_token}/messages/@original"
+    base_url = ""
+    if media_type == "tv":
+        base_url = "https://rottentomatoes.com/tv/"
+    elif media_type == "movie":
+        base_url = "https://rottentomatoes.com/m/"
 
 
     if "the" in title.split(" ")[0]:
@@ -68,46 +89,44 @@ def rotten_tomatoes_handler(title, title_year, embed, headers, app_id, interacti
         word.pop(0)
         word = " ".join(word)
 
-        rotten_tomatoes_url = "https://rottentomatoes.com/m/" + words.replace(" ", "_")
-        rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+
+        rotten_tomatoes_url = base_url + words.replace(" ", "_")
+        rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
         print(rotten_tomatoes_url)
         if rt_value == "404":
-            rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title_year.replace(" ", "_")
-            rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+            rotten_tomatoes_url = base_url + title_year.replace(" ", "_")
+            rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
             print(rotten_tomatoes_url)
             if rt_value == "404":
-                rotten_tomatoes_url = "https://rottentomatoes.com/m/" + word.replace(" ", "_")
-                rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+                rotten_tomatoes_url = base_url + word.replace(" ", "_")
+                rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
                 print(rotten_tomatoes_url)
                 if rt_value == "404":
-                    rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title.replace(" ", "_")
-                    rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+                    rotten_tomatoes_url = base_url + title.replace(" ", "_")
+                    rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
                     print(rotten_tomatoes_url)
                     if rt_value == "404":
                         rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
     else:
-        rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title_year.replace(" ", "_")
-        rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+        rotten_tomatoes_url = base_url + title_year.replace(" ", "_")
+        rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
         if rt_value == "404":
-            rotten_tomatoes_url = "https://rottentomatoes.com/m/" + title.replace(" ", "_")
-            rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url)
+            rotten_tomatoes_url = base_url + title.replace(" ", "_")
+            rt_value = scraper.scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
             if rt_value == "404":
                 rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
 
 
     embed['fields'][6]['value'] = f"[{rt_value['critic_score']} | {rt_value['audience_score']}]({rotten_tomatoes_url}) (Critic | Audience)"
 
-    return requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).text
+    return session.patch(discord_url, headers=auth_headers, json={"embeds": [embed]}).text
 
 
 def respond_movie_info(movie_name, interaction_token, app_id, year):
     discord_url = discord_endpoint + f"/webhooks/{app_id}/{interaction_token}/messages/@original"
-
+    session = requests.Session()
 
     try:
-        headers = {
-            "Authorization": "Bearer " + get_token()
-        }
         embed = {
             "title": None,
             "description": None,
@@ -160,10 +179,10 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
           }
 
 
-        search = api_functions.tmdb_search(movie_name, tmdb_api_key, year)
+        search = api_functions.tmdb_search(movie_name, tmdb_api_key, year, session)
 
         if len(search['results']) == 0:
-            return requests.patch(discord_url, headers=headers, json={"embeds": [
+            return session.patch(discord_url, headers=auth_headers, json={"embeds": [
                 {"title": "Movie Not Found",
                  "description": "Please try again with a better search query",
                  "color": 16711680}]})
@@ -195,14 +214,14 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
                     popularity = result['popularity']
                     movie_id = result['id']
 
-        movie = api_functions.tmdb_info(str(movie_id), tmdb_api_key)
-        omdb_info = api_functions.omdb_info(movie['imdb_id'], omdb_api_key)
+        movie = api_functions.tmdb_info(str(movie_id), tmdb_api_key, session)
+        omdb_info = api_functions.omdb_info(movie['imdb_id'], omdb_api_key, session)
 
 
         release_year = movie['release_date'].split("-")[0]
         embed['title'] = movie['title'] + f" ({release_year} - {omdb_info['Rated']})"
 
-        providers = movie['watch/providers']['results']['US']
+        providers = movie['watch/providers']['results'].get('US')
         provider_url = providers['link']
         streaming = providers.get('flatrate')
         if streaming is not None:
@@ -239,47 +258,42 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
         title_with_year = remove_special_char(movie['title'] + " " + release_year).lower()
 
         metacritic_url = "https://metacritic.com/movie/" + title_with_year.replace(" ","-")
-        metacritic_scores = scraper.metacritic_scrape(metacritic_url)
+        metacritic_scores = scraper.metacritic_scrape(metacritic_url, session)
 
         if metacritic_scores == "404":
             metacritic_url = "https://metacritic.com/movie/" + title.replace(" ","-")
-            metacritic_scores = scraper.metacritic_scrape(metacritic_url)
+            metacritic_scores = scraper.metacritic_scrape(metacritic_url, session)
 
             if metacritic_scores == "404":
                 metacritic_scores = {"metascore": "N/A", "user_score": "N/A"}
 
         embed['fields'][5]['value'] = f"[{metacritic_scores['metascore']} | {metacritic_scores['user_score']} / 10.0]({metacritic_url})"
+        for rating in omdb_info['Ratings']:
+            if rating['Source'] == "Rotten Tomatoes":
+                embed['fields'][6]['value'] = f"{rating['Value']} | Pending... (Critic | Audience)"
+
 
         rotten_tomatoes_thread = threading.Thread(target=rotten_tomatoes_handler,kwargs={
+            "media_type": "movie",
             "title": title,
             "title_year": title_with_year,
             "embed": embed,
-            "headers": headers,
             "app_id": app_id,
-            "interaction_token": interaction_token})
+            "interaction_token": interaction_token,
+            "session": session})
 
         rotten_tomatoes_thread.start()
 
-        return requests.patch(discord_url, headers=headers, json={"embeds": [embed]}).text
+        return session.patch(discord_url, headers=auth_headers, json={"embeds": [embed]}).text
     except Exception as e:
-        headers = {
-            "Authorization": "Bearer " + get_token()
-        }
-
-
         traceback.print_exc()
-        return requests.patch(discord_url, headers=headers, json={"embeds": [
+        return session.patch(discord_url, headers=auth_headers, json={"embeds": [
                 {"title": "Internal Server Error (505) ",
                  "description": e.__doc__,
                  "color": 16711680}]})
     except:
-        headers = {
-            "Authorization": "Bearer " + get_token()
-        }
-
-
         traceback.print_exc()
-        return requests.patch(discord_url, headers=headers, json={"embeds": [
+        return session.patch(discord_url, headers=auth_headers, json={"embeds": [
             {"title": "Internal Server Error (505) ",
              "description": "Unknown Error, Check Server Logs",
              "color": 16711680}]})

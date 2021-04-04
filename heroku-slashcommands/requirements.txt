@@ -4,4 +4,6 @@ discord_interactions
 selenium
 requests
 beautifulsoup4
+lxml
+cchardet
 iso-639
