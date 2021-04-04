@@ -197,6 +197,7 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
         popularity = 0
         year_diff = 9999999999
         if year:
+            print(search['results'])
             for result in search['results']:
                 difference = abs(int(result['release_date'].split("-")[0]) - year)
                 print(difference + "," + year_diff)
@@ -227,7 +228,6 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
         embed['title'] = movie['title'] + f" ({release_year} - {omdb_info['Rated']})"
 
         providers = movie['watch/providers']['results'].get('US')
-        print(providers)
         provider_url = providers.get('link')
         streaming = providers.get('flatrate')
         if streaming is not None:
@@ -319,7 +319,7 @@ def pong():
         search_query = json_data['data']['options'][0]['value']
 
         try:
-            search_year = int(json_data['data']['options'][1]['value'])
+            search_year = json_data['data']['options'][1]['value']
         except IndexError:
             search_year = None
 
