@@ -226,7 +226,8 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
         embed['title'] = movie['title'] + f" ({release_year} - {omdb_info['Rated']})"
 
         providers = movie['watch/providers']['results'].get('US')
-        provider_url = providers['link']
+        print(providers)
+        provider_url = providers.get('link')
         streaming = providers.get('flatrate')
         if streaming is not None:
             streaming = streaming[0]['provider_name']
