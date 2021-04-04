@@ -201,7 +201,7 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
             print(search['results'])
             for result in search['results']:
                 difference = abs(int(result['release_date'].split("-")[0]) - year)
-                print(difference + "," + year_diff)
+                print(str(difference) + "," + str(year_diff))
                 if difference < year_diff:
                     year_diff = difference
                     best_movies.clear()
