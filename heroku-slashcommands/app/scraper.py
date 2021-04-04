@@ -13,7 +13,6 @@ def scrape_rotten_tomatoes(rt_url, request_session, driver):
         response = request_session.get(rt_url, stream=True)
         response.raw.decode_content = True
         tree = lxml.html.parse(response.raw)
-        print(tree.xpath("//*[contains(text(), '404 - Not Found')]"))
         if tree.xpath("//*[contains(text(), '404 - Not Found')]"):
 
             return "404"
