@@ -36,7 +36,7 @@ def scrape_rotten_tomatoes(rt_url, request_session, driver):
         audience_score = shadowRoot_audience.find_elements_by_tag_name("span")[1].text
 
 
-        driver.close()
+
         return {"critic_score": critic_score, "audience_score": audience_score}
     except:
         traceback.print_exc()
