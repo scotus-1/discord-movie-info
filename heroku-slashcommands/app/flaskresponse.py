@@ -232,6 +232,7 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
         streaming = None
         renting = None
         buying = None
+        provider_url = None
         if providers is not None:
             provider_url = providers.get('link')
             streaming = providers.get('flatrate')
