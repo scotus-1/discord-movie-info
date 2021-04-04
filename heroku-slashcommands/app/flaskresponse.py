@@ -26,21 +26,24 @@ tmdb_api_key = os.environ.get("TMDB_API_KEY")
 
 omdb_api_key = os.environ.get("OMDB_API_KEY")
 
-options = webdriver.ChromeOptions()
-prefs = {
-    'profile.default_content_setting_values': {
-        'images': 2,
-        'permissions.default.stylesheet': 2,
-        'javascript': 2
-    }
-}
-options.add_experimental_option("prefs", prefs)
-options.add_argument('headless')
-options.add_argument("--disable-dev-shm-usage")
-options.add_argument("--no-sandbox")
-options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 
-driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
+
+def create_driver():
+    options = webdriver.ChromeOptions()
+    prefs = {
+        'profile.default_content_setting_values': {
+            'images': 2,
+            'permissions.default.stylesheet': 2,
+            'javascript': 2
+        }
+    }
+    options.add_experimental_option("prefs", prefs)
+    options.add_argument('headless')
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+
+    return webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
 
 # token retrieval
 def get_token():
@@ -72,6 +75,7 @@ def remove_special_char(text):
 
 
 def rotten_tomatoes_handler(media_type, title, title_year, embed, app_id, interaction_token, session):
+    driver = create_driver()
     discord_url = discord_endpoint + f"/webhooks/{app_id}/{interaction_token}/messages/@original"
     base_url = ""
     if media_type == "tv":
@@ -116,7 +120,7 @@ def rotten_tomatoes_handler(media_type, title, title_year, embed, app_id, intera
             if rt_value == "404":
                 rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
 
-
+    driver.close()
     embed['fields'][6]['value'] = f"[{rt_value['critic_score']} | {rt_value['audience_score']}]({rotten_tomatoes_url}) (Critic | Audience)"
 
     return session.patch(discord_url, headers=auth_headers, json={"embeds": [embed]}).text
