@@ -229,16 +229,20 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
         embed['title'] = movie['title'] + f" ({release_year} - {omdb_info['Rated']})"
 
         providers = movie['watch/providers']['results'].get('US')
-        provider_url = providers.get('link')
-        streaming = providers.get('flatrate')
-        if streaming is not None:
-            streaming = streaming[0]['provider_name']
-        renting = providers.get('rent')
-        if renting is not None:
-            renting = renting[0]['provider_name']
-        buying = providers.get('buy')
-        if buying is not None:
-            buying = buying[0]['provider_name']
+        streaming = None
+        renting = None
+        buying = None
+        if providers is not None:
+            provider_url = providers.get('link')
+            streaming = providers.get('flatrate')
+            if streaming is not None:
+                streaming = streaming[0]['provider_name']
+            renting = providers.get('rent')
+            if renting is not None:
+                renting = renting[0]['provider_name']
+            buying = providers.get('buy')
+            if buying is not None:
+                buying = buying[0]['provider_name']
 
 
         embed['description'] = "\n" + movie['overview'] + "\n\n" + \
