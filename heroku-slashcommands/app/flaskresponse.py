@@ -51,12 +51,6 @@ def remove_special_char(text):
     return re.sub('\W+', ' ', removed_apostrophes).lower()
 
 
-
-
-
-
-
-
 @app.route('/interactions', methods=['POST'])
 @verify_key_decorator(discord_public_key)
 def pong():
