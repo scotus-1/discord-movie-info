@@ -1,11 +1,33 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from app.flaskresponse import auth_headers, discord_endpoint
+from selenium import webdriver
 import lxml.html
 import cchardet
 import traceback
 import bs4
+import os
 
+
+
+
+def create_driver():
+    options = webdriver.ChromeOptions()
+    prefs = {
+        'profile.default_content_setting_values': {
+            'images': 2,
+            'permissions.default.stylesheet': 2,
+            'javascript': 2
+        }
+    }
+    options.add_experimental_option("prefs", prefs)
+    options.add_argument('headless')
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+
+    return webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
 
 
 def scrape_rotten_tomatoes(rt_url, request_session, driver):
@@ -60,3 +82,54 @@ def metacritic_scrape(url, request_session):
         traceback.print_exc()
         return {"metascore": "--", "user_score": "--"}
 
+
+def rotten_tomatoes_handler(media_type, title, title_year, embed, app_id, interaction_token, session):
+    driver = create_driver()
+    discord_url = discord_endpoint + f"/webhooks/{app_id}/{interaction_token}/messages/@original"
+    base_url = ""
+    if media_type == "tv":
+        base_url = "https://rottentomatoes.com/tv/"
+    elif media_type == "movie":
+        base_url = "https://rottentomatoes.com/m/"
+
+
+    if "the" in title.split(" ")[0]:
+        words = title_year.split(" ")
+        words.pop(0)
+        words = " ".join(words)
+
+        word = title.split(" ")
+        word.pop(0)
+        word = " ".join(word)
+
+
+        rotten_tomatoes_url = base_url + words.replace(" ", "_")
+        rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+        print(rotten_tomatoes_url)
+        if rt_value == "404":
+            rotten_tomatoes_url = base_url + title_year.replace(" ", "_")
+            rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+            print(rotten_tomatoes_url)
+            if rt_value == "404":
+                rotten_tomatoes_url = base_url + word.replace(" ", "_")
+                rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+                print(rotten_tomatoes_url)
+                if rt_value == "404":
+                    rotten_tomatoes_url = base_url + title.replace(" ", "_")
+                    rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+                    print(rotten_tomatoes_url)
+                    if rt_value == "404":
+                        rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
+    else:
+        rotten_tomatoes_url = base_url + title_year.replace(" ", "_")
+        rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+        if rt_value == "404":
+            rotten_tomatoes_url = base_url + title.replace(" ", "_")
+            rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+            if rt_value == "404":
+                rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
+
+    driver.close()
+    embed['fields'][6]['value'] = f"[{rt_value['critic_score']} | {rt_value['audience_score']}]({rotten_tomatoes_url}) (Critic | Audience)"
+
+    return session.patch(discord_url, headers=auth_headers, json={"embeds": [embed]}).text
