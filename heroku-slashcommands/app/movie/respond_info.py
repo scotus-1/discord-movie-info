@@ -79,7 +79,6 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
         best_movies = []
         popularity = 0
         year_diff = 9999999999
-        print(year)
         if year is not None:
             print(search['results'])
             for result in search['results']:
