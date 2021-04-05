@@ -1,5 +1,5 @@
-import app
+from app.flaskresponse import app
 
 
 if __name__ == "__main__":
-    app.flaskresponse.app.run(debug=True)
+    app.run(debug=True)

@@ -6,7 +6,7 @@ import os
 
 # create Flask App and router
 app = Flask(__name__)
-router = Router()
+router = Router(__name__)
 
 
 @app.route('/interactions', methods=['POST'])
