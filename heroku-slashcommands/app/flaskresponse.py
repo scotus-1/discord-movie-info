@@ -8,6 +8,7 @@ import os
 app = Flask(__name__)
 router = Router()
 
+
 @app.route('/interactions', methods=['POST'])
 @verify_key_decorator(os.environ.get("DISCORD_CLIENT_PUBLIC_KEY"))
 def pong():
