@@ -7,9 +7,8 @@ import json
 import os
 import re
 
+
 # create Flask App
-
-
 app = Flask(__name__)
 
 # create global keys and secrets

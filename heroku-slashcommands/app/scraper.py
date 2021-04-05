@@ -1,17 +1,13 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from app.flaskresponse import discord_endpoint, get_token
+from app.flaskresponse import discord_endpoint, auth_headers
 from selenium import webdriver
 import lxml.html
 import cchardet
 import traceback
 import bs4
 import os
-
-auth_headers = {
-            "Authorization": "Bearer " + get_token()
-        }
 
 
 def create_driver():
