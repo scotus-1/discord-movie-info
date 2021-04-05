@@ -17,7 +17,7 @@ omdb_api_key = os.environ.get("OMDB_API_KEY")
 def get_token():
   data = {
     'grant_type': 'client_credentials',
-    'scope': 'applications.channels applications.channels.update'
+    'scope': 'applications.commands applications.commands.update'
   }
   headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
