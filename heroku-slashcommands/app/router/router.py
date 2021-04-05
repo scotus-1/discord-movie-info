@@ -4,20 +4,21 @@ import threading
 
 
 class Router:
-    def __init__(self, package_name):
+    def __init__(self):
         self.command_dictionary = dict()
         self.kwargs_dictionary = dict()
-        importlib.__import__(package_name.split(".")[0])
 
 
     def register_command(self, func, command_name):
         print(command_name)
         self.command_dictionary[command_name] = func
+        return func
 
 
     def register_kwargs(self, func, command_name):
         print(command_name)
         self.kwargs_dictionary[command_name] = func
+        return func
 
 
     def run(self, request):
