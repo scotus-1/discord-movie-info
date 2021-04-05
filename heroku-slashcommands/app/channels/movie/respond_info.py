@@ -6,7 +6,7 @@ from traceback import print_exc
 import requests
 from app.globals import omdb_api_key, tmdb_api_key, discord_endpoint, remove_special_char, auth_headers
 from app.functions import api_functions, scraper
-from app.flaskresponse import router
+from app.router import router
 
 
 

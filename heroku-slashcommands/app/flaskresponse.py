@@ -1,12 +1,12 @@
 from flask import Flask, request, jsonify
 from discord_interactions import verify_key_decorator
-from app.router.router import Router
+from app.router import router
 import os
 
 
 # create Flask App and router
 app = Flask(__name__)
-router = Router()
+
 
 
 @app.route('/interactions', methods=['POST'])
