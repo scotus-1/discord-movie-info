@@ -4,7 +4,7 @@ import requests
 
 
 # create global keys and secrets
-discord_endpoint = "https://discord.com/api"
+discord_endpoint = "https://discord.com/api/v8"
 discord_client_id = os.environ.get("DISCORD_CLIENT_ID")
 discord_client_secret = os.environ.get("DISCORD_CLIENT_SECRET")
 
@@ -26,7 +26,7 @@ def get_token():
                     data=data, headers=headers,
                     auth=(discord_client_id, discord_client_secret))
 
-  r.raise_for_status()
+
   print(r.json())
   return r.json()['access_token']
 
