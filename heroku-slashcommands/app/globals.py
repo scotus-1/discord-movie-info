@@ -3,9 +3,6 @@ import os
 import requests
 
 
-
-
-
 # create global keys and secrets
 discord_endpoint = "https://discord.com/api"
 discord_client_id = os.environ.get("DISCORD_CLIENT_ID")
@@ -20,7 +17,7 @@ omdb_api_key = os.environ.get("OMDB_API_KEY")
 def get_token():
   data = {
     'grant_type': 'client_credentials',
-    'scope': 'applications.commands applications.commands.update'
+    'scope': 'applications.channels applications.channels.update'
   }
   headers = {
     'Content-Type': 'application/x-www-form-urlencoded'

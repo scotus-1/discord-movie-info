@@ -10,7 +10,7 @@ CLIENT_SECRET = '61x9aHm50V2NvIE45MG2VwP6Ze_Dycgr'
 def get_token():
   data = {
     'grant_type': 'client_credentials',
-    'scope': 'applications.commands applications.commands.update'
+    'scope': 'applications.channels applications.channels.update'
   }
   headers = {
     'Content-Type': 'application/x-www-form-urlencoded'

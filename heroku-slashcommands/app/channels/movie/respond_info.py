@@ -5,10 +5,31 @@ from random import choice
 from traceback import print_exc
 import requests
 from app.globals import omdb_api_key, tmdb_api_key, discord_endpoint, remove_special_char, auth_headers
-from app import scraper, api_functions
+from app.functions import api_functions, scraper
+from app.router.router import Router
 
 
+@Router.register_kwargs('movie')
+def respond_movie_info_kwargs(json):
+    search_query = json['data']['options'][0]['value']
 
+    try:
+        search_year = json['data']['options'][1]['value']
+    except IndexError:
+        search_year = None
+
+    token = json['token']
+    application_id = json['application_id']
+
+    return {
+        "movie_name": search_query,
+        "interaction_token": token,
+        "app_id": application_id,
+        "year": search_year
+    }
+
+
+@Router.register_command('movie')
 def respond_movie_info(movie_name, interaction_token, app_id, year):
     discord_url = discord_endpoint + f"/webhooks/{app_id}/{interaction_token}/messages/@original"
     session = requests.Session()
@@ -166,7 +187,7 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
                 embed['fields'][6]['value'] = f"{rating['Value']} | Pending... (Critic | Audience)"
 
 
-        rotten_tomatoes_thread = threading.Thread(target=scraper.rotten_tomatoes_handler,kwargs={
+        rotten_tomatoes_thread = threading.Thread(target=scraper.rotten_tomatoes_handler, kwargs={
             "media_type": "movie",
             "title": title,
             "title_year": title_with_year,
