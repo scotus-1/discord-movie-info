@@ -9,10 +9,12 @@ class Router:
 
 
     def register_command(self, func, command_name):
+        print(command_name)
         self.command_dictionary[command_name] = func
 
 
     def register_kwargs(self, func, command_name):
+        print(command_name)
         self.kwargs_dictionary[command_name] = func
 
 
