@@ -4,7 +4,7 @@ import requests
 
 
 # create global keys and secrets
-discord_endpoint = "https://discord.com/api"
+discord_endpoint = "https://discord.com/api/v8"
 discord_client_id = os.environ.get("DISCORD_CLIENT_ID")
 discord_client_secret = os.environ.get("DISCORD_CLIENT_SECRET")
 
