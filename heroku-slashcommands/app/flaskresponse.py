@@ -4,7 +4,7 @@ from app.router.router import Router
 import os
 
 
-# create Flask App
+# create Flask App and router
 app = Flask(__name__)
 router = Router()
 
@@ -16,6 +16,7 @@ def pong():
             "type": 1
         })
     else:
+        print(request.data)
         router.run(request)
 
         return jsonify({
