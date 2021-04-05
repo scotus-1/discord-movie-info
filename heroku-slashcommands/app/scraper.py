@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from app.flaskresponse import discord_endpoint, auth_headers
+from app.globals import discord_endpoint, auth_headers
 from selenium import webdriver
 import lxml.html
 import cchardet

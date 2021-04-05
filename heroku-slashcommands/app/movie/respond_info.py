@@ -4,7 +4,7 @@ from datetime import timedelta
 from random import choice
 from traceback import print_exc
 import requests
-from app.flaskresponse import omdb_api_key, tmdb_api_key, discord_endpoint, remove_special_char, auth_headers
+from app.globals import omdb_api_key, tmdb_api_key, discord_endpoint, remove_special_char, auth_headers
 from app import scraper, api_functions
 
 
