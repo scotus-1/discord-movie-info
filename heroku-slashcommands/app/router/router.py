@@ -18,7 +18,7 @@ class Router:
 
     def run(self, request):
         request = json.loads(request.data)
-        name = request['name']
+        name = request['data']['name']
         kwargs_command = self.kwargs_dictionary[name]
 
         if kwargs_command is not None:
