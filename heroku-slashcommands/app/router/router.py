@@ -6,8 +6,7 @@ class Router:
     def __init__(self, package_name):
         self.command_dictionary = dict()
         self.kwargs_dictionary = dict()
-        print(package_name)
-        __import__(package_name)
+        __import__(package_name.split(".")[0])
 
 
     def register_command(self, func, command_name):
