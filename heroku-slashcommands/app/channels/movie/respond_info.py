@@ -6,10 +6,11 @@ from traceback import print_exc
 import requests
 from app.globals import omdb_api_key, tmdb_api_key, discord_endpoint, remove_special_char, auth_headers
 from app.functions import api_functions, scraper
-from app.router.router import Router
+from app.flaskresponse import router
 
 
-@Router.register_kwargs('movie')
+
+@router.register_kwargs('movie')
 def respond_movie_info_kwargs(json):
     search_query = json['data']['options'][0]['value']
 
@@ -29,7 +30,7 @@ def respond_movie_info_kwargs(json):
     }
 
 
-@Router.register_command('movie')
+@router.register_command('movie')
 def respond_movie_info(movie_name, interaction_token, app_id, year):
     discord_url = discord_endpoint + f"/webhooks/{app_id}/{interaction_token}/messages/@original"
     session = requests.Session()
