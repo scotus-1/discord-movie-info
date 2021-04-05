@@ -8,7 +8,6 @@ kwargs_dictionary = dict()
 
 def register_command(command_name):
     def inner(func):
-        print(command_name)
         command_dictionary[command_name] = func
         return func
     return inner
@@ -16,7 +15,6 @@ def register_command(command_name):
 
 def register_kwargs(command_name):
     def inner(func):
-        print(command_name)
         kwargs_dictionary[command_name] = func
         return func
     return inner

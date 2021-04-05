@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from discord_interactions import verify_key_decorator
 from app.router import router
-from app.channels.movie import respond_info
+from app import channels
 import os
 
 

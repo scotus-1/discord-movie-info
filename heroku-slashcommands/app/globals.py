@@ -27,7 +27,6 @@ def get_token():
                     auth=(discord_client_id, discord_client_secret))
 
 
-  print(r.json())
   return r.json()['access_token']
 
 
