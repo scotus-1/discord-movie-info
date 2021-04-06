@@ -57,8 +57,7 @@ def scrape_rotten_tomatoes(media_type, rt_url, request_session, **kwargs):
             tree = lxml.html.parse(response.raw)
 
 
-            print(tree.xpath("//*[@id='tomato_meter_link']/span/span[2]")[0].text_content().strip())
-            print(tree.xpath("//*[@id='topSection']/section/div[1]/section/section/div[2]/h2/a/span/span[2]")[0].text_content().strip())
+
             critic_score = tree.xpath("//*[@id='tomato_meter_link']/span/span[2]")[0].text_content().strip()
             audience_score = tree.xpath("//*[@id='topSection']/section/div[1]/section/section/div[2]/h2/a/span/span[2]")[0].text_content().strip()
         else:

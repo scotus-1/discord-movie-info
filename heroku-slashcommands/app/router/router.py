@@ -31,8 +31,7 @@ def run(request):
         kwargs = None
 
 
-    print(kwargs)
-    print(command_dictionary[name])
+
     thread = threading.Thread(target=command_dictionary[name],
                               kwargs=kwargs)
 
