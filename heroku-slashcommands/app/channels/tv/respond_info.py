@@ -167,7 +167,7 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
                 buying = buying[0]['provider_name']
 
 
-        embed['description'] = "\n" + tv_show['overview'] + f"\n\n{tv_show['tagline']}\n" + \
+        embed['description'] = "\n" + tv_show['overview'] + f"\n\n*{tv_show['tagline']}*\n" + \
                                f"[```md\n<Stream: {streaming}> <Rent: {renting}> <Buy: {buying}> 'US'```]({provider_url})"
 
         embed['url'] = "https://themoviedb.org/tv/" + str(tv_show['id'])
