@@ -184,7 +184,7 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
 
         embed['fields'][4]['value'] = f"{tv_show['status']} | {tv_show['type']}"
 
-        imdb_url = "https://imdb.com/title/" + tv_show['imdb_id']
+        imdb_url = "https://imdb.com/title/" + imdb_id
         embed['fields'][5]['value'] = f"[{omdb_info['imdbRating']} / 10 - {omdb_info['imdbVotes']} votes]({imdb_url})"
 
         title = remove_special_char(tv_show['title']).lower()
