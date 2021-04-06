@@ -175,7 +175,7 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
 
         created_by = ""
         for creator in tv_show["created_by"]:
-            created_by + creator["name"] + ", "
+            created_by = created_by + creator["name"] + ", "
         embed['fields'][1]['value'] = created_by
 
         average_runtime = str(round(mean(tv_show['episode_run_time'])))
@@ -219,7 +219,6 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
             "session": session})
 
         rotten_tomatoes_thread.start()
-        print(embed)
         return print(session.patch(discord_url, headers=auth_headers, json={"embeds": [embed]}).text)
     except Exception as e:
         print_exc()
