@@ -92,7 +92,7 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
                 {
                     "name": "Last Episode:",
                     "value": None,
-                    "inline": False
+                    "inline": True
                 }
             ]
           }
@@ -179,8 +179,11 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
         embed['fields'][0]['value'] = omdb_info['Genre']
 
         created_by = ""
-        for creator in tv_show["created_by"]:
-            created_by = created_by + creator["name"] + ", "
+        if tv_show['created_by'].len() == 1:
+            created_by = tv_show['created_by'][0]['name']
+        else:
+            for creator in tv_show["created_by"]:
+                created_by = created_by + creator['name'] + ", "
         embed['fields'][1]['value'] = created_by
 
         average_runtime = str(round(mean(tv_show['episode_run_time'])))
