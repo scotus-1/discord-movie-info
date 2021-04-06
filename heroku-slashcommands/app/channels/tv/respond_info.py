@@ -52,17 +52,17 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
               {
                 "name": "Genre(s):",
                 "value": None,
-                "inline": False
+                "inline": True
                 },
               {
                 "name": "Created By:",
                 "value": None,
-                "inline": False
+                "inline": True
                 },
                 {
                 "name": "Seasons/Episodes (avg runtime):",
                   "value": None,
-                "inline": True
+                "inline": False
                 },
                 {
                 "name": "Language:",
