@@ -108,10 +108,10 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
         year_diff = 9999999999
         if year is not None:
             for result in search['results']:
-                print(result['first_air_date'])
-                print("-")
-                print(result['first_air_date'].split("-")[0])
-                difference = abs(int(result['first_air_date'].split("-")[0]) - year)
+                if result['first_air_date'].split("-")[0].strip():
+                    difference = abs(int(result['first_air_date'].split("-")[0]) - year)
+                else:
+                    difference = 99999999999999999999
                 if difference < year_diff:
                     year_diff = difference
                     best_tv.clear()
