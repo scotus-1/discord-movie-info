@@ -179,7 +179,7 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
         embed['fields'][0]['value'] = omdb_info['Genre']
 
         created_by = ""
-        if tv_show['created_by'].len() == 1:
+        if len(tv_show['created_by']) == 1:
             created_by = tv_show['created_by'][0]['name']
         else:
             for creator in tv_show["created_by"]:
