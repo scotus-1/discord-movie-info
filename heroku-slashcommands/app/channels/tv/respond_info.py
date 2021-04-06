@@ -183,6 +183,8 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
         created_by = ""
         if len(tv_show['created_by']) == 1:
             created_by = tv_show['created_by'][0]['name']
+        elif len(tv_show['created_by']) == 0:
+            created_by = "N/A"
         else:
             for creator in tv_show["created_by"]:
                 created_by = created_by + creator['name'] + ", "
@@ -235,7 +237,6 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
 
         rotten_tomatoes_thread.start()
 
-        print(embed)
         return print(session.patch(discord_url, headers=auth_headers, json={"embeds": [embed]}).text)
     except Exception as e:
         print_exc()
