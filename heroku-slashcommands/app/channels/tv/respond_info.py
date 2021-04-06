@@ -53,22 +53,22 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
                 "name": "Genre(s):",
                 "value": None,
                 "inline": False
-              },
+                },
               {
                 "name": "Created By:",
                 "value": None,
                 "inline": False
-              },
-              {
+                },
+                {
                 "name": "Seasons/Episodes (avg runtime):",
-                "value": None,
+                  "value": None,
                 "inline": True
-              },
-              {
+                },
+                {
                 "name": "Language:",
                 "value": None,
                 "inline": True
-              },
+                },
                 {
                     "name": "Status | Type:",
                     "value": None,
@@ -140,6 +140,8 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
         last_year = tv_show['last_air_date'].split("-")[0]
         if tv_show['in_production']:
             embed['title'] = tv_show['name'] + f" ({release_year}-({last_year}) - {omdb_info['Rated']})"
+        else:
+            embed['title'] = tv_show['name'] + f" ({release_year}-{last_year} - {omdb_info['Rated']})"
 
         providers = tv_show['watch/providers']['results'].get('US')
         streaming = None
