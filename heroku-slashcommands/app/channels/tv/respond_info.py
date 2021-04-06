@@ -23,7 +23,7 @@ def respond_movie_info_kwargs(json):
     application_id = json['application_id']
 
     return {
-        "movie_name": search_query,
+        "tv_name": search_query,
         "interaction_token": token,
         "app_id": application_id,
         "year": search_year
