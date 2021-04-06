@@ -166,10 +166,12 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
             if buying is not None:
                 buying = buying[0]['provider_name']
 
-
-        embed['description'] = "\n" + tv_show['overview'] + f"\n\n*{tv_show['tagline']}*\n" + \
+        if tv_show['tagline']:
+            embed['description'] = "\n" + tv_show['overview'] + f"\n\n*{tv_show['tagline']}*\n" + \
                                f"[```md\n<Stream: {streaming}> <Rent: {renting}> <Buy: {buying}> 'US'```]({provider_url})"
-
+        else:
+            embed['description'] = "\n" + tv_show['overview'] + f"\n\n" + \
+                                   f"[```md\n<Stream: {streaming}> <Rent: {renting}> <Buy: {buying}> 'US'```]({provider_url})"
         embed['url'] = "https://themoviedb.org/tv/" + str(tv_show['id'])
         embed['image']['url'] = choice(["https://image.tmdb.org/t/p/original" + tv_show['poster_path'],
                                         omdb_info['Poster'].replace("_V1_SX300", "_V1_SX3000"),
