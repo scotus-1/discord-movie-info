@@ -88,7 +88,12 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
                 "name": "Rotten Tomatoes:",
                 "value": "Pending...",
                 "inline": True
-              }
+              },
+                {
+                    "name": "Last Episode:",
+                    "value": None,
+                    "inline": False
+                }
             ]
           }
 
@@ -207,6 +212,11 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
         for rating in omdb_info['Ratings']:
             if rating['Source'] == "Rotten Tomatoes":
                 embed['fields'][7]['value'] = f"{rating['Value']} | Pending... (Critic | Audience)"
+
+
+        last_ep = tv_show['last_episode_to_air']
+        episode_url = "https://tmdb.org/tv" + f"/{str(tv_id)}/season/{str(last_ep['season_number'])}/episode/{str(last_ep['episode_number'])}"
+        embed['fields'][8]['value'] = f"[{last_ep['name']} | S{str(last_ep['season_number'])} EP{str(last_ep['episode_number'])}]({episode_url})"
 
 
         rotten_tomatoes_thread = threading.Thread(target=scraper.rotten_tomatoes_handler, kwargs={
