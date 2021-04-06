@@ -130,7 +130,8 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
                     tv_id = result['id']
 
         tv_show = api_functions.tmdb_info("tv", str(tv_id), tmdb_api_key, session)
-        omdb_info = api_functions.omdb_info(tv_show['imdb_id'], omdb_api_key, session)
+        imdb_id = api_functions.tmdb_get_imdb_id("tv", tv_show['id'], tmdb_api_key, session)['imdb_id']
+        omdb_info = api_functions.omdb_info(imdb_id, omdb_api_key, session)
 
 
         release_year = tv_show['first_air_date'].split("-")[0]

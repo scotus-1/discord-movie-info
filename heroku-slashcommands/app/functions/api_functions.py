@@ -52,3 +52,21 @@ def omdb_info(imdb_id, api_key, session):
 
     return response.json()
 
+
+def tmdb_get_imdb_id(media_type, movie_id, api_key, session):
+    search_query = {'api_key': api_key,
+                    'append_to_response': "watch/providers"}
+
+    endpoint = ""
+    if media_type == "tv":
+        endpoint = "/tv/"
+    elif media_type == "movie":
+        endpoint = "/movie/"
+
+    q_str = urlencode(search_query)
+    url = tmdb_url + endpoint + movie_id + "/external_ids" + "?" + q_str
+
+    response = session.get(url)
+
+    return response.json()
+
