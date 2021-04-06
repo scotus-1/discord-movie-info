@@ -188,6 +188,7 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
         else:
             for creator in tv_show["created_by"]:
                 created_by = created_by + creator['name'] + ", "
+            created_by = created_by[:-1]
         embed['fields'][1]['value'] = created_by
 
         average_runtime = str(round(mean(tv_show['episode_run_time'])))
