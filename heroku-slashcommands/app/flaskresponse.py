@@ -5,9 +5,13 @@ from app import channels
 import os
 
 
-# create Flask App and router
+# create Flask App
 app = Flask(__name__)
 
+
+# improve search results
+# create manuel overrides for ratings and add table for quicker times
+# add seasons and episodes
 
 @app.route('/interactions', methods=['POST'])
 @verify_key_decorator(os.environ.get("DISCORD_CLIENT_PUBLIC_KEY"))

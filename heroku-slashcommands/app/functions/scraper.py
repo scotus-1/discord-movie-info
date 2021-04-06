@@ -28,32 +28,45 @@ def create_driver():
     return webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
 
 
-def scrape_rotten_tomatoes(rt_url, request_session, driver):
+def scrape_rotten_tomatoes(media_type, rt_url, request_session, **kwargs):
     try:
         response = request_session.get(rt_url, stream=True)
         response.raw.decode_content = True
         tree = lxml.html.parse(response.raw)
         if tree.xpath("//*[contains(text(), '404 - Not Found')]"):
-
             return "404"
 
-        driver.get(rt_url)
-        element1 = WebDriverWait(driver, 10).until(ec.presence_of_element_located((By.TAG_NAME, "score-board")))
+        driver = kwargs['driver']
+        if media_type == "movie":
+            driver.get(rt_url)
+            element1 = WebDriverWait(driver, 60).until(ec.presence_of_element_located((By.TAG_NAME, "score-board")))
 
-        shadowRoot1 = driver.execute_script("return arguments[0].shadowRoot", element1)
+            shadowRoot1 = driver.execute_script("return arguments[0].shadowRoot", element1)
 
-        element_critic = shadowRoot1.find_element_by_tag_name("score-icon-critic")
-        element_audience = shadowRoot1.find_element_by_tag_name("score-icon-audience")
+            element_critic = shadowRoot1.find_element_by_tag_name("score-icon-critic")
+            element_audience = shadowRoot1.find_element_by_tag_name("score-icon-audience")
 
-        shadowRoot_critic = driver.execute_script("return arguments[0].shadowRoot", element_critic)
-        shadowRoot_audience = driver.execute_script("return arguments[0].shadowRoot", element_audience)
+            shadowRoot_critic = driver.execute_script("return arguments[0].shadowRoot", element_critic)
+            shadowRoot_audience = driver.execute_script("return arguments[0].shadowRoot", element_audience)
 
-        critic_score = shadowRoot_critic.find_elements_by_tag_name("span")[1].text
-        audience_score = shadowRoot_audience.find_elements_by_tag_name("span")[1].text
+            critic_score = shadowRoot_critic.find_elements_by_tag_name("span")[1].text
+            audience_score = shadowRoot_audience.find_elements_by_tag_name("span")[1].text
+        elif media_type == "tv":
+            response = request_session.get(rt_url, stream=True)
+            response.raw.decode_content = True
+            page = lxml.html.parse(response.raw)
 
+            critic_score = page.xpath("//*[@id='tomato_meter_link']/span/span[2]")[0].text_content()
+            audience_score = page.xpath("//*[@id='topSection']/section/div[1]/section/section/div[2]/h2/a/span/span[2]")[0].text_content()
+        else:
+            critic_score = "N/A"
+            audience_score = "N/A"
 
 
         return {"critic_score": critic_score, "audience_score": audience_score}
+    except TimeoutError:
+        traceback.print_exc()
+        return {"critic_score": "N/A", "audience_score": "408 Timeout"}
     except:
         traceback.print_exc()
         return {"critic_score": "N/A", "audience_score": "N/A"}
@@ -82,13 +95,16 @@ def metacritic_scrape(url, request_session):
 
 
 def rotten_tomatoes_handler(media_type, title, title_year, embed, app_id, interaction_token, session):
-    driver = create_driver()
+
     discord_url = discord_endpoint + f"/webhooks/{app_id}/{interaction_token}/messages/@original"
     base_url = ""
+    driver = None
     if media_type == "tv":
         base_url = "https://rottentomatoes.com/tv/"
+
     elif media_type == "movie":
         base_url = "https://rottentomatoes.com/m/"
+        driver = create_driver()
 
 
     if "the" in title.split(" ")[0]:
@@ -102,32 +118,33 @@ def rotten_tomatoes_handler(media_type, title, title_year, embed, app_id, intera
 
 
         rotten_tomatoes_url = base_url + words.replace(" ", "_")
-        rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+        rt_value = scrape_rotten_tomatoes(media_type, rotten_tomatoes_url, session, driver=driver)
         print(rotten_tomatoes_url)
         if rt_value == "404":
             rotten_tomatoes_url = base_url + title_year.replace(" ", "_")
-            rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+            rt_value = scrape_rotten_tomatoes(media_type, rotten_tomatoes_url, session, driver=driver)
             print(rotten_tomatoes_url)
             if rt_value == "404":
                 rotten_tomatoes_url = base_url + word.replace(" ", "_")
-                rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+                rt_value = scrape_rotten_tomatoes(media_type, rotten_tomatoes_url, session, driver=driver)
                 print(rotten_tomatoes_url)
                 if rt_value == "404":
                     rotten_tomatoes_url = base_url + title.replace(" ", "_")
-                    rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+                    rt_value = scrape_rotten_tomatoes(media_type, rotten_tomatoes_url, session, driver=driver)
                     print(rotten_tomatoes_url)
                     if rt_value == "404":
                         rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
     else:
         rotten_tomatoes_url = base_url + title_year.replace(" ", "_")
-        rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+        rt_value = scrape_rotten_tomatoes(media_type, rotten_tomatoes_url, session, driver=driver)
         if rt_value == "404":
             rotten_tomatoes_url = base_url + title.replace(" ", "_")
-            rt_value = scrape_rotten_tomatoes(rotten_tomatoes_url, session, driver)
+            rt_value = scrape_rotten_tomatoes(media_type, rotten_tomatoes_url, session, driver=driver)
             if rt_value == "404":
                 rt_value = {"critic_score": "N/A", "audience_score": "N/A"}
 
-    driver.close()
+    if driver:
+        driver.close()
     embed['fields'][6]['value'] = f"[{rt_value['critic_score']} | {rt_value['audience_score']}]({rotten_tomatoes_url}) (Critic | Audience)"
 
     return session.patch(discord_url, headers=auth_headers, json={"embeds": [embed]}).text

@@ -23,8 +23,6 @@ def register_kwargs(command_name):
 def run(request):
     request = json.loads(request.data)
     name = request['data']['name']
-    print(kwargs_dictionary)
-    print(command_dictionary)
     kwargs_command = kwargs_dictionary[name]
 
     if kwargs_command is not None:
