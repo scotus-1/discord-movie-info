@@ -64,7 +64,7 @@ def tmdb_get_imdb_id(media_type, movie_id, api_key, session):
         endpoint = "/movie/"
 
     q_str = urlencode(search_query)
-    url = tmdb_url + endpoint + movie_id + "/external_ids" + "?" + q_str
+    url = tmdb_url + endpoint + str(movie_id) + "/external_ids" + "?" + q_str
 
     response = session.get(url)
 
