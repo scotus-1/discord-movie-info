@@ -12,7 +12,13 @@ app = Flask(__name__)
 # improve search results
 # create manuel overrides for ratings and add table for quicker times
 # add seasons and episodes
-# fix rotten tomatoes ep scraper
+# fix rotten tomatoes tv scraper
+# better availability checks
+# most foreign tv shows dont work?
+# MORE ROTTEN TOMATOES HANDLING AND APPARENTLY METACRITIC (if ends in underscore remove)
+# remove the last comma
+# fix threading issues
+# add tagline
 
 
 @app.route('/interactions', methods=['POST'])
