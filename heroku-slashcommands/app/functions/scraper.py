@@ -147,6 +147,6 @@ def rotten_tomatoes_handler(media_type, title, title_year, embed, app_id, intera
 
     if driver:
         driver.close()
-    embed['fields'][6]['value'] = f"[{rt_value['critic_score']} | {rt_value['audience_score']}]({rotten_tomatoes_url}) (Critic | Audience)"
+    embed['fields'][7]['value'] = f"[{rt_value['critic_score']} | {rt_value['audience_score']}]({rotten_tomatoes_url}) (Critic | Audience)"
 
     return session.patch(discord_url, headers=auth_headers, json={"embeds": [embed]}).text
