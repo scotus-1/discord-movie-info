@@ -56,7 +56,8 @@ def scrape_rotten_tomatoes(media_type, rt_url, request_session, **kwargs):
             response.raw.decode_content = True
             page = lxml.html.parse(response.raw)
 
-
+            print(page.xpath("//*[@id='tomato_meter_link']/span/span[2]")[0].text_content().strip())
+            print(page.xpath("//*[@id='topSection']/section/div[1]/section/section/div[2]/h2/a/span/span[2]")[0].text_content().strip())
             critic_score = page.xpath("//*[@id='tomato_meter_link']/span/span[2]")[0].text_content().strip()
             audience_score = page.xpath("//*[@id='topSection']/section/div[1]/section/section/div[2]/h2/a/span/span[2]")[0].text_content().strip()
         else:
