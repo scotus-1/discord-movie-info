@@ -30,6 +30,9 @@ def run(request):
     else:
         kwargs = None
 
+
+    print(kwargs)
+    print(command_dictionary[name])
     thread = threading.Thread(target=command_dictionary[name],
                               kwargs=kwargs)
 

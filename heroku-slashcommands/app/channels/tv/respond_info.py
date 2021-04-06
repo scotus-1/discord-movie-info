@@ -216,7 +216,7 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
             "session": session})
 
         rotten_tomatoes_thread.start()
-
+        print(embed)
         return session.patch(discord_url, headers=auth_headers, json={"embeds": [embed]})
     except Exception as e:
         print_exc()
