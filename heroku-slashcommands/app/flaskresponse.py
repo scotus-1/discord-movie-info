@@ -18,7 +18,6 @@ app = Flask(__name__)
 # MORE ROTTEN TOMATOES HANDLING AND APPARENTLY METACRITIC (if ends in underscore remove)
 # remove the last comma
 # fix threading issues
-# add tagline
 
 
 @app.route('/interactions', methods=['POST'])
