@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 # improve search results
 # create manuel overrides for ratings and add table for quicker times
-# add seasons and episodes
+# add seasons and episodes and anime?(jikan), credits, cast, trailer
 # fix rotten tomatoes tv scraper
 # better availability checks
 # most foreign tv shows dont work?
