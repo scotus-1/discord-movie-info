@@ -194,11 +194,15 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
             created_by = created_by[:-1]
         embed['fields'][1]['value'] = created_by
 
-        if tv_show['episode_run_time']:
+        if tv_show['episode_run_time'] and tv_show['number_of_seasons']:
             average_runtime = str(round(mean(tv_show['episode_run_time'])))
             embed['fields'][2]['value'] = \
             f"{str(tv_show['number_of_seasons'])} seasons and {str(tv_show['number_of_episodes'])} episodes | {average_runtime} minutes"
-
+        elif tv_show['number_of_seasons']:
+            embed['fields'][2]['value'] = \
+                f"{str(tv_show['number_of_seasons'])} seasons and {str(tv_show['number_of_episodes'])} episodes"
+        else:
+            embed['fields'][2]['value'] = "???"
         embed['fields'][3]['value'] = languages.get(alpha2=tv_show['original_language']).name
 
 
