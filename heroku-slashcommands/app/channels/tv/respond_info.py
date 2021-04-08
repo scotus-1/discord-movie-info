@@ -142,7 +142,10 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
 
 
         release_year = tv_show['first_air_date'].split("-")[0]
-        last_year = tv_show['last_air_date'].split("-")[0]
+        if tv_show['last_air_date']:
+            last_year = tv_show['last_air_date'].split("-")[0]
+        else:
+            last_year = ""
 
         if tv_show['in_production']:
             embed['title'] = tv_show['name'] + f" ({release_year}-({last_year}) - {omdb_info['Rated']})"
