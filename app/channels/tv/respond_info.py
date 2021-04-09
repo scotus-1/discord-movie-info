@@ -211,8 +211,17 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
         imdb_url = "https://imdb.com/title/" + imdb_id
         embed['fields'][5]['value'] = f"[{omdb_info['imdbRating']} / 10 - {omdb_info['imdbVotes']} votes]({imdb_url})"
 
+
+
+
         title = remove_special_char(tv_show['name']).lower()
+        if title[-1] == "_" or title[-1] == "-":
+            title = title[:-1]
         title_with_year = remove_special_char(tv_show['name'] + " " + release_year).lower()
+
+
+        if title[-1] == "_" or title[-1] == "-":
+            title = title[:-1]
 
         metacritic_url = "https://metacritic.com/tv/" + title_with_year.replace(" ","-")
         metacritic_scores = scraper.metacritic_scrape(metacritic_url, session)
