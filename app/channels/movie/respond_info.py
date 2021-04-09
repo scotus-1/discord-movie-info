@@ -169,6 +169,9 @@ def respond_movie_info(movie_name, interaction_token, app_id, year):
         embed['fields'][4]['value'] = f"[{omdb_info['imdbRating']} / 10 - {omdb_info['imdbVotes']} votes]({imdb_url})"
 
         title = remove_special_char(movie['title']).lower()
+        if title[-1] == "_" or title[-1] == "-":
+            print("test")
+            title = title[:-1]
         title_with_year = remove_special_char(movie['title'] + " " + release_year).lower()
 
         metacritic_url = "https://metacritic.com/movie/" + title_with_year.replace(" ","-")
