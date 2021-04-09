@@ -56,11 +56,23 @@ def scrape_rotten_tomatoes(media_type, rt_url, request_session, **kwargs):
             response.raw.decode_content = True
             tree = lxml.html.parse(response.raw)
 
-            print(tree.xpath("//*[@id='tomato_meter_link']/span/span[2]")[0].text_content().strip())
-            print(tree.xpath("//*[@id='topSection']/section/div[1]/section/section/div[2]/h2/a/span/span[2]")[0].text_content().strip())
+            try:
+                print(tree.xpath("//*[@id='tomato_meter_link']/span/span[2]")[0].text_content().strip())
+                print(tree.xpath("//*[@id='topSection']/section/div[1]/section/section/div[2]/h2/a/span/span[2]")[0].text_content().strip())
+            except:
+                traceback.print_exc()
 
-            critic_score = tree.xpath("//*[@id='tomato_meter_link']/span/span[2]")[0].text_content().strip()
-            audience_score = tree.xpath("//*[@id='topSection']/section/div[1]/section/section/div[2]/h2/a/span/span[2]")[0].text_content().strip()
+            try:
+                critic_score = tree.xpath("//*[@id='tomato_meter_link']/span/span[2]")[0].text_content().strip()
+            except:
+                traceback.print_exc()
+                critic_score = "N/A"
+
+            try:
+                audience_score = tree.xpath("//*[@id='topSection']/section/div[1]/section/section/div[2]/h2/a/span/span[2]")[0].text_content().strip()
+            except:
+                traceback.print_exc()
+                audience_score= "N/A"
         else:
             critic_score = "N/A"
             audience_score = "N/A"
