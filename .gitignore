@@ -1,6 +1,6 @@
 /venv
-app/__pycache__/
-/__pycache__
+**/__pycache__
 /.idea
 test.py
 slashcommands.py
+*.swp
