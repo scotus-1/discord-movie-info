@@ -214,15 +214,10 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
 
 
 
-        title = remove_special_char(tv_show['name']).lower()
-        print(title)
-        if title[-1] == "_" or title[-1] == "-":
-            title = title[:-1]
-        title_with_year = remove_special_char(tv_show['name'] + " " + release_year).lower()
+        title = remove_special_char(tv_show['name']).lower().strip()
 
+        title_with_year = remove_special_char(tv_show['name'] + " " + release_year).lower().strip()
 
-        if title[-1] == "_" or title[-1] == "-":
-            title = title[:-1]
 
         metacritic_url = "https://metacritic.com/tv/" + title_with_year.replace(" ","-")
         metacritic_scores = scraper.metacritic_scrape(metacritic_url, session)
