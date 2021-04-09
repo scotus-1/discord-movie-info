@@ -215,6 +215,7 @@ def respond_tv_info(tv_name, interaction_token, app_id, year):
 
 
         title = remove_special_char(tv_show['name']).lower()
+        print(title)
         if title[-1] == "_" or title[-1] == "-":
             title = title[:-1]
         title_with_year = remove_special_char(tv_show['name'] + " " + release_year).lower()
